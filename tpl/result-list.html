@@ -1,0 +1,31 @@
+﻿<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2">
+      <!--Sidebar content-->
+ 
+      Search: <input ng-model="query"><br />
+
+    </div>
+    <div class="span10">
+      <!--Body content-->
+ 
+      <table class="results">
+        <tr>
+            <th><button ng-click="sort('TestDate')">Test Date</button></th>
+            <th><button ng-click="sort('EnterDate')">Enter Date</button></th>
+            <th><button ng-click="sort('TestResult')">Test Result</button></th>
+            <th><button ng-click="sort('EquipId')">Equip ID</button></th>
+            <th><button ng-click="sort('Reference')">Reference</button></th>
+        </tr>
+        <tr ng-repeat="result in results | filter:query | orderBy:orderProp ">
+            <td><a href="#/results/{{result.Id}}">{{result.TestDate | date}}</a></td>
+            <td>{{result.EnterDate | date}}</td>
+            <td>{{result.TestResult | checkmark}}</td>
+            <td>{{result.EquipId}}</td>
+            <td>{{result.Reference}}</td>
+        </tr>
+      </table>
+ 
+    </div>
+  </div>
+</div>
