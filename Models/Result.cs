@@ -8,6 +8,7 @@ namespace OSUDental.Models
     public class Result
     {
         public int Id { get; set; }
+        public int ClientId { get; set; }
         public DateTime TestDate { get; set; }
         public DateTime EnterDate { get; set; }
         public Boolean TestResult { get; set; }

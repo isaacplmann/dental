@@ -1,0 +1,28 @@
+﻿<div class="form-left-col">
+    <label>Id:</label>
+    <input name="client.Id" type="text" ng-model="client.Id" disabled />
+
+    <label>Name:</label>
+    <input type="text" name="client.Name" ng-model="client.Name" required/>
+
+    <label>Address:</label>
+    <input type="text" name="client.Address" ng-model="client.Address" required/>
+
+    <label>Address2:</label>
+    <input type="text" name="client.Address2" ng-model="client.Address2" required/>
+
+    <label>City:</label>
+    <input type="text" name="client.City" ng-model="client.City" required/>
+
+    {{client.DateAdded | date}}<br />
+    {{client.DateDropped | date}}<br />
+
+
+    <button class="save" ng-click="save()">Save</button>
+    <button class="delete" ng-click="delete()">Delete</button>
+</div>
+
+<div class="form-right-col">
+    <label>State:</label>
+    <textarea name="client.State" ng-model="client.State"></textarea>
+</div>

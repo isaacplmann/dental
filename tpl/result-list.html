@@ -8,9 +8,17 @@
     </div>
     <div class="span10">
       <!--Body content-->
- 
-      <table class="results">
-        <tr>
+        <div class="filters">
+            {{ gridOptions.totalServerItems }}
+            <label for="startDate">Start Date</label>
+            <input id="startDate" name="startDate" ng-model="filterOptions.startDate" ui-date /><br />
+            <label for="endDate">End Date</label>
+            <input id="endDate" name="endDate" ng-model="filterOptions.endDate" ui-date />
+        </div>
+         <div class="gridStyle" ng-grid="gridOptions"></div> 
+
+<!--      <table class="results">
+             <tr>
             <th><button ng-click="sort('TestDate')">Test Date</button></th>
             <th><button ng-click="sort('EnterDate')">Enter Date</button></th>
             <th><button ng-click="sort('TestResult')">Test Result</button></th>
@@ -24,7 +32,7 @@
             <td>{{result.EquipId}}</td>
             <td>{{result.Reference}}</td>
         </tr>
-      </table>
+      </table>-->
  
     </div>
   </div>
