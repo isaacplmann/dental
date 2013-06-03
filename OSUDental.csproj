@@ -123,7 +123,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ClientController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\EquipmentController.cs" />
     <Compile Include="Controllers\ResultController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -136,9 +137,15 @@
       <DependentUpon>ImportUsers.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\Equipment.cs" />
+    <Compile Include="Models\PageDetails.cs" />
     <Compile Include="Models\Result.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AuthenticationHelper.cs" />
     <Compile Include="Services\ClientRepository.cs" />
+    <Compile Include="Services\OrderRepository.cs" />
+    <Compile Include="Services\EquipmentRepository.cs" />
     <Compile Include="Services\ResultRepository.cs" />
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
@@ -154,8 +161,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="css\app.css" />
     <Content Include="css\bootstrap.min.css" />
-    <Content Include="Content\images\glyphicons-halflings-white.png" />
-    <Content Include="Content\images\glyphicons-halflings.png" />
+    <Content Include="css\images\glyphicons-halflings-white.png" />
+    <Content Include="css\images\glyphicons-halflings.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -217,12 +224,19 @@
     <Content Include="Global.asax" />
     <Content Include="ImportUsers.aspx" />
     <Content Include="index.html" />
+    <Content Include="js\angular-cookies.min.js" />
+    <Content Include="js\angular-resource.min.js" />
+    <Content Include="js\angular-ui-ieshiv.min.js" />
+    <Content Include="js\angular-ui.min.js" />
+    <Content Include="js\angular.min.js" />
     <Content Include="js\app.js" />
     <Content Include="js\controllers.js" />
     <Content Include="js\es5-shim.min.js" />
     <Content Include="js\filters.js" />
+    <Content Include="js\jquery-1.9.1.min.js" />
     <Content Include="js\ng-grid-2.0.4.debug.js" />
     <Content Include="js\ng-grid-2.0.4.min.js" />
+    <Content Include="js\routingConfig.js" />
     <Content Include="js\services.js" />
     <Content Include="Scripts\angular-bootstrap-prettify.js" />
     <Content Include="Scripts\angular-bootstrap-prettify.min.js" />
@@ -420,11 +434,31 @@
     <Content Include="Scripts\ui-bootstrap-0.2.0.min.js" />
     <Content Include="Scripts\ui-bootstrap-tpls-0.2.0.js" />
     <Content Include="Scripts\ui-bootstrap-tpls-0.2.0.min.js" />
-    <Content Include="tpl\client-list.html" />
+    <Content Include="test-config\karma.e2e.conf.js" />
+    <Content Include="test-config\karma.shared.conf.js" />
+    <Content Include="test-config\karma.unit.conf.js" />
+    <Content Include="test-config\karma.midway.conf.js" />
+    <Content Include="test\e2e\routesSpec.js" />
+    <Content Include="test\lib\angular-mocks.js" />
+    <Content Include="test\lib\ngMidwayTester.js" />
+    <Content Include="test\midway\appSpec.js" />
+    <Content Include="test\midway\routesSpec.js" />
+    <Content Include="test\mocks\Services.js" />
+    <Content Include="test\unit\controller\clientSpec.js" />
+    <Content Include="test\unit\controller\orderSpec.js" />
+    <Content Include="test\unit\controller\resultSpec.js" />
+    <Content Include="test\unit\controller\equipmentSpec.js" />
     <Content Include="tpl\client-detail.html" />
+    <Content Include="tpl\client-list.html" />
+    <Content Include="tpl\client-view.html" />
+    <Content Include="tpl\client-equipment-list.html" />
+    <Content Include="tpl\client-result-list.html" />
+    <Content Include="tpl\client-order-list.html" />
+    <Content Include="tpl\equipment-detail.html" />
+    <Content Include="tpl\order-list.html" />
+    <Content Include="tpl\equipment-list.html" />
     <Content Include="tpl\result-detail.html" />
     <Content Include="tpl\result-list.html" />
-    <Content Include="tpl\welcome.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -447,11 +481,6 @@
     <Content Include="Images\orderedList8.png" />
     <Content Include="Images\orderedList9.png" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Views\Web.config" />
-    <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

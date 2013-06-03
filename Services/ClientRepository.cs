@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data.SqlTypes;
+using System.Web.Security;
 
 namespace OSUDental.Services
 {
@@ -26,6 +27,11 @@ namespace OSUDental.Services
         }
 
         public List<Client> GetAllClients(int Page,int PageSize,String SortColumn,String direction) {
+            if (!HttpContext.Current.User.IsInRole("admin"))
+            {
+                throw new UnauthorizedAccessException("You do not have permission to view all clients' information.");
+            }
+
             String orderBy = "SMS_NUM";
             if (SortColumn.Equals("Name"))
             {
@@ -91,16 +97,45 @@ namespace OSUDental.Services
             return clients;
         }
 
-        public Client GetClient(int Id) {
+        public Client GetClient() {
+            String username = HttpContext.Current.User.Identity.Name;
+            return GetClient(username);
+        }
+
+        private Client GetClient(String username)
+        {
+            SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+            SqlCommand cmd = new SqlCommand("SELECT TOP 1 * FROM SMS.dbo.SMCLNT WHERE username=@username", cn);
+            cmd.Parameters.AddWithValue("@username", username);
+            cn.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            Client cl = GetClient(dr);
+            cn.Close();
+            return cl;
+        }
+        public Client GetClient(int Id)
+        {
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
             SqlCommand cmd = new SqlCommand("SELECT TOP 1 * FROM SMS.dbo.SMCLNT WHERE SMS_NUM=@SMS_NUM", cn);
             cmd.Parameters.AddWithValue("@SMS_NUM", Id);
             cn.Open();
             SqlDataReader dr = cmd.ExecuteReader();
 
+            Client cl = GetClient(dr);
+            cn.Close();
+            return cl;
+        }
+        private Client GetClient(IDataReader dr)
+        {
             List<Client> clients = new List<Client>();
             while (dr.Read())
             {
+                if (!HttpContext.Current.User.IsInRole("admin") && !HttpContext.Current.User.Identity.Name.Equals(dr["UserName"]))
+                {
+                    throw new UnauthorizedAccessException("You do not have permission to view other clients' information.");
+                }
+
                 clients.Add(new Client
                 {
                     Id = (int)dr["SMS_NUM"],
@@ -129,7 +164,6 @@ namespace OSUDental.Services
                 });
             }
 
-            cn.Close();
             if (clients.Count > 0) {
                 return clients[0];
             }

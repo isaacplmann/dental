@@ -1,39 +1,27 @@
-﻿<div class="container-fluid">
-  <div class="row-fluid">
-    <div class="span2">
-      <!--Sidebar content-->
- 
-      Search: <input ng-model="query"><br />
-
-    </div>
-    <div class="span10">
-      <!--Body content-->
-        <div class="filters">
-            {{ gridOptions.totalServerItems }}
-            <label for="startDate">Start Date</label>
-            <input id="startDate" name="startDate" ng-model="filterOptions.startDate" ui-date /><br />
-            <label for="endDate">End Date</label>
-            <input id="endDate" name="endDate" ng-model="filterOptions.endDate" ui-date />
+﻿<div class="container-fluid" ng-controller="ResultListCtrl">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a href="SMS" class="brand">SMS</a>
+            <div class="nav pull-right">
+                <span><a href="Logout.aspx" class="btn">Log out</a></span>
+            </div>
+            <ul class="nav">
+                <li><a href="#/">Dashboard</a></li>
+                <li class="active"><a href="#/results">Results</a></li>
+                <li><a href="#/orders">Order History</a></li>
+            </ul>
         </div>
-         <div class="gridStyle" ng-grid="gridOptions"></div> 
-
-<!--      <table class="results">
-             <tr>
-            <th><button ng-click="sort('TestDate')">Test Date</button></th>
-            <th><button ng-click="sort('EnterDate')">Enter Date</button></th>
-            <th><button ng-click="sort('TestResult')">Test Result</button></th>
-            <th><button ng-click="sort('EquipId')">Equip ID</button></th>
-            <th><button ng-click="sort('Reference')">Reference</button></th>
-        </tr>
-        <tr ng-repeat="result in results | filter:query | orderBy:orderProp ">
-            <td><a href="#/results/{{result.Id}}">{{result.TestDate | date}}</a></td>
-            <td>{{result.EnterDate | date}}</td>
-            <td>{{result.TestResult | checkmark}}</td>
-            <td>{{result.EquipId}}</td>
-            <td>{{result.Reference}}</td>
-        </tr>
-      </table>-->
- 
+    </div>
+    <div class="filters row-fluid">
+        <div class="span12">
+            <label for="startDate">Start Date: <input id="startDate" name="startDate" ng-model="PagingGrid.filterOptions.startDate" ui-date ui-date-format /></label>
+            <label for="endDate">End Date: <input id="endDate" name="endDate" ng-model="PagingGrid.filterOptions.endDate" ui-date ui-date-format /></label>
+        </div>
+    </div>
+  <div class="row-fluid">
+    <div class="span12">
+      <!--Body content-->
+         <div class="gridStyle" ng-grid="PagingGrid.gridOptions"></div> 
     </div>
   </div>
 </div>

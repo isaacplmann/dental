@@ -1,0 +1,324 @@
+body
+{
+	margin: 0px;
+	padding: 0px;
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+	font-size: 85%;
+}
+
+/* OSU nav bar */
+
+
+#navbarspace
+{
+	width: 98%;
+	min-width: 700px;
+	margin: 0 auto 20px auto;
+}
+
+br.clearall { clear: both; }
+
+/* overall content area */
+#content
+{
+	width: 99%;
+	padding: 0 0 0 10px;
+}
+
+/*top navigation */
+.navleftrightrule
+{
+/*	border-right: #D6C789;  */
+	border-left: #D6C789;
+	border-width: 0 1px 0 1px;
+/*	border-style: none solid none solid; */
+	border-style: none none none solid; 
+	padding: 0 10px;
+	margin: 0 0 0 5px;
+	text-align: left;
+}
+
+.leftrule
+{
+	border-color: #D6C789;
+	border-width: 0 0 0 1px;
+	padding: 0 3px 0 8px;
+	border-style: none none none solid;
+	text-align: left;
+}
+
+#topnav OL
+{
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+	font-size: .9em;
+	font-weight: bold;
+}
+
+#topnav OL LI { padding: 0 5px 10px 0; }
+
+#topnav a:link
+{
+	color: #900;
+	text-decoration: none;
+}
+
+#topnav a:active
+{
+	color: #900;
+	text-decoration: none;
+}
+
+#topnav a:visited
+{
+	color: #666;
+	text-decoration: none;
+}
+
+#topnav a:hover
+{
+	color: #900;
+	text-decoration: underline;
+}
+
+/*Left navigation*/
+#leftnav
+{
+	width: 130px;
+	margin: 10px 5px 0 0;
+}
+
+#leftnav OL
+{
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+	font-size: .9em;
+}
+
+#leftnav LI { padding: 0 0 8px 0; }
+
+#leftnav a:link
+{
+	color: #900;
+	text-decoration: none;
+}
+
+#leftnav a:visited
+{
+	color: #666;
+	text-decoration: none;
+}
+
+#leftnav a:active
+{
+	color: #900;
+	text-decoration: none;
+}
+
+#leftnav a:hover
+{
+	color: #900;
+	text-decoration: underline;
+}
+
+/*tan content area*/
+.leftrightrule
+{
+	border-top: #EFECC8;
+	border-right: #D6C789;
+	border-left: #D6C789;
+	border-bottom: #900;
+	border-width: 1px;
+	border-style: solid;
+	padding: 0 10px 10px 10px;
+	margin: 0 0 0 5px;
+	text-align: left;
+	background: #EFECC8;
+	width: 470px;
+}
+
+/*tan content area removal*/
+.leftrightrule2
+{
+	border-top: #FFFFFF;
+	border-right: #FFFFFF;
+	border-left: #FFFFFF;
+	border-bottom: #FFFFFF;
+	border-width: 1px;
+	border-style: solid;
+	padding: 6px 10px 10px 10px;
+	margin: 0 0 0 5px;
+	text-align: left;
+	background: #FFFFFF;
+	width: 470px;
+}
+
+
+
+
+/*news and events*/
+#news
+{
+	width: 260px;
+	margin: 50px 5px 0 15px;
+}
+#news h2 {font-family: Georgia; font-weight: normal; font-size: 1.4em; font-style: normal;}
+#content #news div.story p {font-size: .9em;}
+
+#news a:link
+{
+	
+	color: #333;
+	text-decoration: none;
+}
+
+#news a:visited
+{
+	color: #333;
+	text-decoration: none;
+}
+
+#news a:hover
+{
+	color: #900;
+	text-decoration: bold;
+}
+
+#news a:active
+{
+	color: #900;
+	text-decoration: bold;
+}
+
+
+div.story {height: 130px; margin: 0 0 20px 0;}
+
+/*second level navigation*/
+#level2nav
+{
+	width: 150px;
+	margin: 45px 5px 0 20px;
+}
+
+#level2nav OL
+{
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+	font-size: .9em;
+}
+
+#level2nav LI { padding: 0 0 8px 0; }
+
+#level2nav a:link
+{
+	color: #000;
+	text-decoration: none;
+}
+
+#level2nav a:active
+{
+	color: #000;
+	text-decoration: none;
+}
+
+#level2nav a:hover
+{
+	color: #900;
+	text-decoration: underline;
+}
+
+#level2nav a:visited
+{
+	color: #333;
+	text-decoration: underline;
+}
+
+/*text styles*/
+#content h1
+{
+	color: #900;
+	font-family: Georgia, Times New Roman, Times, serif;
+	font-size: 1.3em;
+	line-height: 110%;
+	font-style: italic;
+}
+
+#content .leftrightrule h1 { margin-top: 6px; }
+
+#content h2
+{
+	color: #900;
+	font-family: Georgia, Times New Roman, Times, serif;
+	font-size: 1em;
+	line-height: 110%;
+	font-style: italic;
+}
+
+#content h3
+{
+	color: #900;
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+	font-size: .9em;
+	line-height: 110%;
+}
+
+#content P, #content UL { font-size: .9em; }
+
+/*for pages that need to be less structured*/
+#widecontent
+{
+	width: 85%;
+	margin: 15px;
+}
+
+/*icons*/
+.icon img { padding: 0 0 10px 10px; }
+
+/* footer */
+#footer
+{
+	width: 98%;
+	padding: 12px 0 0 0;
+	border-top: 2px solid #ccc;
+	margin: 20px 10px 10px 10px;
+}
+
+#footer p
+{
+	padding: 0px;
+	margin: 0px;
+	font-size: .9em;
+}
+
+#footer img { padding: 0 10px 10px 0; }
+
+#copyright
+{
+	width: 350px;
+	float: right;
+	margin: 0;
+	padding: 0;
+}
+
+/*virtual visit--feature*/
+#feature
+{
+	width: 132px;
+	border-color: #900;
+	border-width: 1px;
+	border-style: solid;
+	background: #EFECC8;
+	margin: 10px 5px 10px 15px;
+	float: right;
+	text-align: center;
+}
+
+#feature p { margin: 10px; text-align: left; }
+
+#feature .photo
+{
+	margin: 10px 10px 0 10px;
+}

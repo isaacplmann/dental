@@ -15,15 +15,16 @@ namespace OSUDental
                 defaults: new { action = "GET", command="count" }
             );
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
+                name: "AllItems",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
+                name: "ClientItems",
                 routeTemplate: "api/client/{clientid}/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                defaults: new { id = RouteParameter.Optional, command="client" }
             );
+            config.Filters.Add(new AuthorizeAttribute());
         }
     }
 }

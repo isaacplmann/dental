@@ -13,5 +13,17 @@ namespace OSUDental
         {
 
         }
+
+        protected void OnLoggedIn(object sender, EventArgs e)
+        {
+            if (HttpContext.Current.User.IsInRole("admin"))
+            {
+                Response.SetCookie(new HttpCookie("userRole", "4"));
+            }
+            else
+            {
+                Response.SetCookie(new HttpCookie("userRole", "2"));
+            }
+        }
     }
 }

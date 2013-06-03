@@ -1,0 +1,32 @@
+﻿<div class="container" ng-controller="ClientResultListCtrl">
+  <div class="row">
+    <div class="span12">
+      <!--Body content-->
+        <div class="filters">
+            <label for="startDate">Start Date</label>
+            <input id="startDate" name="startDate" ng-model="PagingGrid.filterOptions.startDate" ui-date /><br />
+            <label for="endDate">End Date</label>
+            <input id="endDate" name="endDate" ng-model="PagingGrid.filterOptions.endDate" ui-date />
+        </div>
+         <div class="gridStyle" ng-grid="PagingGrid.gridOptions"></div> 
+
+<!--      <table class="results">
+             <tr>
+            <th><button ng-click="sort('TestDate')">Test Date</button></th>
+            <th><button ng-click="sort('EnterDate')">Enter Date</button></th>
+            <th><button ng-click="sort('TestResult')">Test Result</button></th>
+            <th><button ng-click="sort('EquipId')">Equip ID</button></th>
+            <th><button ng-click="sort('Reference')">Reference</button></th>
+        </tr>
+        <tr ng-repeat="result in results | filter:query | orderBy:orderProp ">
+            <td><a href="#/results/{{result.Id}}">{{result.TestDate | date}}</a></td>
+            <td>{{result.EnterDate | date}}</td>
+            <td>{{result.TestResult | checkmark}}</td>
+            <td>{{result.EquipId}}</td>
+            <td>{{result.Reference}}</td>
+        </tr>
+      </table>-->
+ 
+    </div>
+  </div>
+</div>

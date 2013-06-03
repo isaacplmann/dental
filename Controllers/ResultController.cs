@@ -7,7 +7,6 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
 
 namespace OSUDental.Controllers
 {
@@ -19,52 +18,63 @@ namespace OSUDental.Controllers
             this.rep = new ResultRepository();
         }
 
-        public int Get(String command)
+        //public int Get(String command)
+        //{
+        //    if (!command.Equals("count"))
+        //    {
+        //        return 0;
+        //    }
+        //    return rep.GetTotalResults(null, null);
+        //}
+
+        //public int Get(String command, [FromUri(Name = "startDate")]DateTime? startDate, [FromUri(Name = "endDate")]DateTime? endDate)
+        //{
+        //    if (!command.Equals("count"))
+        //    {
+        //        return 0;
+        //    }
+        //    return rep.GetTotalResults(startDate, endDate);
+        //}
+
+        public Result[] Get([FromUri(Name = "isArray")]bool isArray)
         {
-            if (!command.Equals("count"))
+            if (AuthenticationHelper.IsAdmin())
             {
-                return 0;
+                return rep.GetAllResults().ToArray();
             }
-            return rep.GetTotalResults(null, null);
+            return rep.GetAllResults(AuthenticationHelper.GetClientId()).ToArray();
         }
 
-        public int Get(String command, [FromUri(Name = "startDate")]DateTime? startDate, [FromUri(Name = "endDate")]DateTime? endDate)
+        [Authorize(Roles = "admin")]
+        public Result[] Get(String command, int clientId)
         {
-            if (!command.Equals("count"))
+            if (command.Equals("client"))
             {
-                return 0;
+                return rep.GetAllResults(clientId).ToArray();
             }
-            return rep.GetTotalResults(startDate, endDate);
-        }
-
-        public Result[] Get()
-        {
-            return rep.GetAllResults().ToArray();
+            return new Result[0];
         }
 
         public Result[] Get([FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
         {
-            return rep.GetAllResults(null, null, page, pageSize, sortColumn, direction).ToArray();
+            return rep.GetAllResults(null, null, new PageDetails(page, pageSize, sortColumn, direction)).ToArray();
         }
 
         public Result[] Get([FromUri(Name = "startDate")]DateTime? startDate, [FromUri(Name = "endDate")]DateTime? endDate, [FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
         {
-            return rep.GetAllResults(startDate, endDate, page, pageSize, sortColumn, direction).ToArray();
+            return rep.GetAllResults(startDate, endDate, new PageDetails(page, pageSize, sortColumn, direction)).ToArray();
         }
 
-        public Result[] Get(int clientId)
+        [Authorize(Roles = "admin")]
+        public Result[] Get([FromUri(Name = "clientId")]int clientId, [FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
         {
-            return rep.GetAllResults(clientId).ToArray();
+            return rep.GetAllResults(clientId,null, null, new PageDetails(page, pageSize, sortColumn, direction)).ToArray();
         }
 
-        public Result[]  ([FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
+        [Authorize(Roles = "admin")]
+        public Result[] Get([FromUri(Name = "clientId")]int clientId, [FromUri(Name = "startDate")]DateTime? startDate, [FromUri(Name = "endDate")]DateTime? endDate, [FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
         {
-            return rep.GetAllResults(null, null, page, pageSize, sortColumn, direction).ToArray();
-        }
-
-        public Result[] Get([FromUri(Name = "startDate")]DateTime? startDate, [FromUri(Name = "endDate")]DateTime? endDate, [FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
-        {
-            return rep.GetAllResults(startDate, endDate, page, pageSize, sortColumn, direction).ToArray();
+            return rep.GetAllResults(clientId,startDate, endDate, new PageDetails(page, pageSize, sortColumn, direction)).ToArray();
         }
 
         public Result Get(int Id)
@@ -72,15 +82,25 @@ namespace OSUDental.Controllers
             return rep.GetResult(Id);
         }
 
+        [Authorize(Roles = "admin")]
         public HttpResponseMessage Post(Result result)
         {
-            this.rep.SaveResult(result);
+            if (result.Id > 0)
+            {
+                this.rep.SaveResult(result);
+            }
+            else
+            {
+                int newId = this.rep.CreateResult(result);
+                result.Id = newId;
+            }
 
             var response = Request.CreateResponse<Result>(System.Net.HttpStatusCode.Created, result);
 
             return response;
         }
 
+        [Authorize(Roles = "admin")]
         public HttpResponseMessage Delete(int Id)
         {
             Result result = this.rep.DeleteResult(Id);

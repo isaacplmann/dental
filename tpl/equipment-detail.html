@@ -1,0 +1,24 @@
+﻿<div class="form-left-col">
+    <label>Id:</label>
+    <input name="result.Id" type="text" ng-model="result.Id" disabled />
+
+    <label>Test Date:</label>
+    <input type="text" name="result.TestDate" ng-model="result.TestDate" required/>
+
+    <label>Enter Date:</label>
+    <input type="text" name="result.EnterDate" ng-model="result.EnterDate" required/>
+
+    <label>Test Result:</label>
+    <input type="text" name="result.TestResult" ng-model="result.TestResult" required/>
+
+    <label>Equip ID:</label>
+    <input type="text" name="result.EquipId" ng-model="result.EquipId" required/>
+
+    <button class="save" ng-click="save()">Save</button>
+    <button class="delete" ng-click="delete()">Delete</button>
+</div>
+
+<div class="form-right-col">
+    <label>Reference:</label>
+    <textarea name="result.Reference" ng-model="result.Reference"></textarea>
+</div>
