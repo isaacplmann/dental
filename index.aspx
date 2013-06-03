@@ -1,4 +1,6 @@
-﻿<!doctype html>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="index.aspx.cs" Inherits="OSUDental.index" %>
+
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">

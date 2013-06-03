@@ -118,26 +118,42 @@ function DetailCtrl($scope, $routeParams, $location, Service, paramName, itemNam
     }
 }
 
-function NavBarCtrl($scope, $route) {
-    console.log("userRole",$scope.userRole);
+function NavBarCtrl($scope, $route, $location) {
+    $scope.path = $location.path();
     $scope.$route = $route;
-    $scope.links = [{
-        uri: '#/a',
-        name: 'A',
-        type: 'a'
-    }, {
-        uri: '#/b',
-        name: 'B',
-        type: 'b'
-    }, {
-        uri: '#/c',
-        name: 'C',
-        type: 'c'
-    }, {
-        uri: '#/a/detail',
-        name: 'A Detail',
-        type: 'a'
-    }];
+    if ($scope.userRole == 2) {
+        $scope.links = [{
+            uri: '#/',
+            name: 'Contact Info',
+            type: 'contactinfo'
+        }, {
+            uri: '#/results',
+            name: 'Results',
+            type: 'results'
+        }, {
+            uri: '#/orders',
+            name: 'Order History',
+            type: 'orders'
+        }];
+    } else if($scope.userRole == 4) {
+        $scope.links = [{
+            uri: '#/clients',
+            name: 'Clients',
+            type: 'clients'
+        }, {
+            uri: '#/equipment',
+            name: 'Equipment',
+            type: 'equipment'
+        }, {
+            uri: '#/results',
+            name: 'Results',
+            type: 'results'
+        }, {
+            uri: '#/orders',
+            name: 'Orders',
+            type: 'orders'
+        }];
+    }
 }
 
 function ResultListCtrl($scope, Result) {
@@ -222,6 +238,10 @@ function ClientListCtrl($scope, $location, Client) {
 }
 
 function ClientDetailCtrl($scope, $routeParams, $location, Client) {
+    if ($scope.userRole == 4) {
+        $location.path("/clients");
+    }
+
     DetailCtrl($scope, $routeParams, $location, Client, "clientId", "client");
     $scope.isEditMode = false;
     $scope.clienttypes = [1,2,3,4,5,6,7,8,9];

@@ -136,6 +136,17 @@
     <Compile Include="ImportUsers.aspx.designer.cs">
       <DependentUpon>ImportUsers.aspx</DependentUpon>
     </Compile>
+    <Compile Include="index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Logout.aspx.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Logout.aspx.designer.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Equipment.cs" />
@@ -223,7 +234,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="ImportUsers.aspx" />
-    <Content Include="index.html" />
+    <Content Include="index.aspx" />
     <Content Include="js\angular-cookies.min.js" />
     <Content Include="js\angular-resource.min.js" />
     <Content Include="js\angular-ui-ieshiv.min.js" />
@@ -238,6 +249,7 @@
     <Content Include="js\ng-grid-2.0.4.min.js" />
     <Content Include="js\routingConfig.js" />
     <Content Include="js\services.js" />
+    <Content Include="Logout.aspx" />
     <Content Include="Scripts\angular-bootstrap-prettify.js" />
     <Content Include="Scripts\angular-bootstrap-prettify.min.js" />
     <Content Include="Scripts\angular-bootstrap.js" />
@@ -455,6 +467,7 @@
     <Content Include="tpl\client-result-list.html" />
     <Content Include="tpl\client-order-list.html" />
     <Content Include="tpl\equipment-detail.html" />
+    <Content Include="tpl\navbar.html" />
     <Content Include="tpl\order-list.html" />
     <Content Include="tpl\equipment-list.html" />
     <Content Include="tpl\result-detail.html" />

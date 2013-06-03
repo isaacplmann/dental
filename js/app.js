@@ -95,7 +95,7 @@ angular.module('osudental', ['osudentalFilters', 'osudentalServices', 'ngGrid', 
 
         $httpProvider.responseInterceptors.push(interceptor);
     }])
-    .run(function ($rootScope, $location, $cookieStore) {
+    .run(function ($rootScope, $location, $cookieStore, $route) {
         if (TESTING) {
             $rootScope.userRole = 4;
         } else if (TESTINGUSER) {
@@ -105,8 +105,6 @@ angular.module('osudental', ['osudentalFilters', 'osudentalServices', 'ngGrid', 
                                   routingConfig.userRoles.public;
             //$cookieStore.remove('userRole');
         }
-
-        //console.log($rootScope.userRole);
 
         $rootScope.$on("$routeChangeStart", function (event, next, current) {
             if (!next || !(next.access & $rootScope.userRole)) {

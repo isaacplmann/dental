@@ -1,17 +1,5 @@
 ﻿<div class="container-fluid" ng-controller="ResultListCtrl">
-    <div class="navbar">
-        <div class="navbar-inner">
-            <a href="SMS" class="brand">SMS</a>
-            <div class="nav pull-right">
-                <span><a href="Logout.aspx" class="btn">Log out</a></span>
-            </div>
-            <ul class="nav">
-                <li><a href="#/">Dashboard</a></li>
-                <li class="active"><a href="#/results">Results</a></li>
-                <li><a href="#/orders">Order History</a></li>
-            </ul>
-        </div>
-    </div>
+    <div ng-include src="'tpl/navbar.html'" ng-controller="NavBarCtrl"></div>
     <div class="filters row-fluid">
         <div class="span12">
             <label for="startDate">Start Date: <input id="startDate" name="startDate" ng-model="PagingGrid.filterOptions.startDate" ui-date ui-date-format /></label>

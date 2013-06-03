@@ -1,20 +1,5 @@
 ﻿<form class="container-fluid" ng-submit="isEditMode=false">
-    <div class="navbar" ng-controller="NavBarCtrl">
-        <div class="navbar-inner">
-            <a href="SMS" class="brand">SMS</a>
-            <div class="nav pull-right">
-                <span ng-hide="isEditMode"><a href="" ng-click="isEditMode=!isEditMode" class="btn">Edit</a></span>
-                <span ng-show="isEditMode"><button class="save btn btn-primary" ng-click="save()">Save</button></span>
-                <span ng-show="isEditMode"><button class="btn" ng-click="isEditMode=false">Cancel</button></span>
-                <span><a href="Logout.aspx" class="btn">Log out</a></span>
-            </div>
-            <ul class="nav">
-                <li class="active"><a href="#/">Contact Info</a></li>
-                <li><a href="#/results">Results</a></li>
-                <li><a href="#/orders">Order History</a></li>
-            </ul>
-        </div>
-    </div>
+    <div ng-include src="'tpl/navbar.html'" ng-controller="NavBarCtrl"></div>
     <div class="row-fluid">
         <div class="span2">
             <label>SMS Number:</label>

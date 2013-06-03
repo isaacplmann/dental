@@ -1,0 +1,17 @@
+﻿<div class="navbar">
+    <div class="navbar-inner">
+        <a href="SMS" class="brand">SMS</a>
+        <div class="nav pull-right">
+            <span ng-hide="isEditMode"><a href="" ng-click="isEditMode=!isEditMode" class="btn">Edit</a></span>
+            <span ng-show="isEditMode"><button class="save btn btn-primary" ng-click="save()">Save</button></span>
+            <span ng-show="isEditMode"><button class="btn" ng-click="isEditMode=false">Cancel</button></span>
+            <span><a href="Logout.aspx" class="btn">Log out</a></span>
+        </div>
+        <ul class="nav">
+            <li ng-repeat="link in links" ng-class="{active: link.uri.substring(1)==path || $route.current.activeNav == link.type}"><a href="{{link.uri}}">{{link.name}}</a></li>
+<!--            <li class="active"><a href="#/">Contact Info</a></li>
+            <li><a href="#/results">Results</a></li>
+            <li><a href="#/orders">Order History</a></li>-->
+        </ul>
+    </div>
+</div>
