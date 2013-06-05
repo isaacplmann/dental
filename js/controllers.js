@@ -135,7 +135,7 @@ function NavBarCtrl($scope, $route, $location) {
             name: 'Order History',
             type: 'orders'
         }];
-    } else if($scope.userRole == 4) {
+    } else if ($scope.userRole == 4) {
         $scope.links = [{
             uri: '#/clients',
             name: 'Clients',
@@ -154,6 +154,28 @@ function NavBarCtrl($scope, $route, $location) {
             type: 'orders'
         }];
     }
+}
+function ClientNavBarCtrl($scope, $route, $location) {
+    $scope.path = $location.path();
+    var clientId = $scope.path.split("/")[2];
+    $scope.$route = $route;
+    $scope.clientlinks = [{
+        uri: '#/clients/'+clientId,
+        name: 'Contact Info',
+        type: 'contactinfo'
+    }, {
+        uri: '#/clients/'+clientId+'/equipment',
+        name: 'Equipment',
+        type: 'equipment'
+    }, {
+        uri: '#/clients/' + clientId + '/results',
+        name: 'Results',
+        type: 'results'
+    }, {
+        uri: '#/clients/' + clientId + '/orders',
+        name: 'Orders',
+        type: 'orders'
+    }];
 }
 
 function ResultListCtrl($scope, Result) {
@@ -238,13 +260,14 @@ function ClientListCtrl($scope, $location, Client) {
 }
 
 function ClientDetailCtrl($scope, $routeParams, $location, Client) {
-    if ($scope.userRole == 4) {
+    if ($location.path()=="/" && $scope.userRole == 4) {
         $location.path("/clients");
     }
 
     DetailCtrl($scope, $routeParams, $location, Client, "clientId", "client");
+    $scope.canEditView = true;
     $scope.isEditMode = false;
-    $scope.clienttypes = [1,2,3,4,5,6,7,8,9];
+    $scope.clienttypes = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     $scope.clienttypelabels = {
         1: "Dental",
         2: "Tattoo",
