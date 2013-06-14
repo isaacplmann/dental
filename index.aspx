@@ -24,6 +24,7 @@
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-resource.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-cookies.js"></script>-->
   <script src="js/angular-ui.min.js"></script>
+  <script src="js/angular-ui-router.min.js"></script>
   <script src="js/ng-grid-2.0.4.debug.js"></script>
   <script src="js/app.js"></script>
   <script src="js/routingConfig.js"></script>
@@ -220,7 +221,10 @@
         </div></td>-->
       <td colspan="3" valign="top"><a name="pagecontent"></a> 
         <div class="osudental-app" ng-app="osudental">
-          <div id="ng-view" ng-view></div>
+            <div class="container-fluid">
+                <div ng-include src="'tpl/navbar.html'" ng-controller="NavBarCtrl"></div>
+                <div id="ng-view" ui-view="primary"></div>
+            </div>
         </div>
       </td>
     </tr>

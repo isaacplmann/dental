@@ -59,11 +59,13 @@
     $scope.$watch('PagingGrid.filterOptions', function () {
         $scope.PagingGrid.resetPaging();
     }, true);
-    $scope.$watch('PagingGrid.selectedItems', function () {
-        if ($scope.PagingGrid.selectedItems.length > 0) {
-            $location.path($location.path() + "/" + $scope.PagingGrid.selectedItems[0].Id);
-        }
-    }, true);
+    if ($scope.userRole == 4) {
+        $scope.$watch('PagingGrid.selectedItems', function () {
+            if ($scope.PagingGrid.selectedItems.length > 0) {
+                $location.path($location.path() + "/" + $scope.PagingGrid.selectedItems[0].Id);
+            }
+        }, true);
+    }
 
     $scope.PagingGrid.gridOptions = {
         data: 'PagingGrid.items',
@@ -78,10 +80,11 @@
         //        totalServerItems:  //0 //Result.count()
     }
 };
-function DetailCtrl($scope, $routeParams, $location, Service, paramName, itemName) {
+function DetailCtrl($scope, $stateParams, $location, Service, paramName, itemName) {
+    $scope.isNewMode = ($stateParams[paramName] == 0);
     $scope.get = function () {
         params = {};
-        params[paramName] = $routeParams[paramName];
+        params[paramName] = $stateParams[paramName];
         $scope[itemName] = Service.get(params);
     };
     $scope.get();
@@ -94,31 +97,53 @@ function DetailCtrl($scope, $routeParams, $location, Service, paramName, itemNam
             }
         });
     };
+    $scope.edit = function () {
+        $scope.isEditMode = true;
+    };
+    $scope.getEditMode = function () {
+        return $scope.isEditMode;
+    }
     $scope.save = function () {
         params = {};
         params[paramName] = $scope[itemName].Id;
         var ok = Service.save(params, $scope[itemName], function (res) {
             if (res) {
-                var arr = $location.path().split("/");
-                arr.pop();
-                $location.path(arr.join("/"));
+                var path = $location.path();
+                if (path == "/") {
+                    $scope.isEditMode = false;
+                } else {
+                    var arr = path.split("/");
+                    arr.pop();
+                    $location.path(arr.join("/"));
+                }
             }
         });
     };
+    $scope.cancel = function () {
+        if ($scope.canEditView) {
+            $scope.isEditMode = false;
+        } else {
+            var arr = $location.path().split("/");
+            arr.pop();
+            $location.path(arr.join("/"));
+        }
+    };
     $scope.delete = function () {
-        params = {};
-        params[paramName] = $scope[itemName].Id;
-        var ok = Service.remove(params, function (res) {
-            if (res) {
-                var arr = $location.path().split("/");
-                arr.pop();
-                $location.path(arr.join("/"));
-            }
-        });
+        if (confirm("Are you sure you want to delete this record?")) {
+            params = {};
+            params[paramName] = $scope[itemName].Id;
+            var ok = Service.remove(params, function (res) {
+                if (res) {
+                    var arr = $location.path().split("/");
+                    arr.pop();
+                    $location.path(arr.join("/"));
+                }
+            });
+        }
     }
 }
 
-function NavBarCtrl($scope, $route, $location) {
+function NavBarCtrl($scope, $state, $route, $location) {
     $scope.path = $location.path();
     $scope.$route = $route;
     if ($scope.userRole == 2) {
@@ -155,10 +180,14 @@ function NavBarCtrl($scope, $route, $location) {
         }];
     }
 }
-function ClientNavBarCtrl($scope, $route, $location) {
+function ClientNavBarCtrl($scope, $state, $location, Client) {
     $scope.path = $location.path();
+    $scope.$on("$stateChangeStart", function (event, next, current) {
+        $scope.path = $location.path();
+    });
     var clientId = $scope.path.split("/")[2];
-    $scope.$route = $route;
+    $scope.clientData = Client.get({ "clientId": clientId });
+    $scope.$state = $state;
     $scope.clientlinks = [{
         uri: '#/clients/'+clientId,
         name: 'Contact Info',
@@ -206,8 +235,8 @@ function ResultListCtrl($scope, Result) {
     //    }, 100);
     //});
 }
-function ClientResultListCtrl($scope, $routeParams, ClientResult, Result) {
-    var clientId = $routeParams.clientId;
+function ClientResultListCtrl($scope, $stateParams, ClientResult, Result) {
+    var clientId = $stateParams.clientId;
     if (!clientId) {
         $scope.PagingGrid.Service = Result;
         $scope.PagingGrid.filterOptions = {
@@ -221,7 +250,7 @@ function ClientResultListCtrl($scope, $routeParams, ClientResult, Result) {
             filters: ['startDate', 'endDate', 'clientId'],
             startDate: null,
             endDate: null,
-            clientId: $routeParams.clientId,
+            clientId: $stateParams.clientId,
         };
     }
     $scope.PagingGrid.sortInfo.fields = ['TestDate'];
@@ -243,8 +272,8 @@ function digitArrayToInteger(arr) {
     return sum;
 }
 
-function ResultDetailCtrl($scope, $routeParams, $location, Result) {
-    DetailCtrl($scope, $routeParams, $location, Result, "resultId", "result");
+function ResultDetailCtrl($scope, $stateParams, $location, Result) {
+    DetailCtrl($scope, $stateParams, $location, Result, "resultId", "result");
 }
 
 function ClientListCtrl($scope, $location, Client) {
@@ -259,55 +288,61 @@ function ClientListCtrl($scope, $location, Client) {
     ];
 }
 
-function ClientDetailCtrl($scope, $routeParams, $location, Client) {
+function ClientDetailCtrl($scope, $stateParams, $location, Client) {
     if ($location.path()=="/" && $scope.userRole == 4) {
         $location.path("/clients");
     }
 
-    DetailCtrl($scope, $routeParams, $location, Client, "clientId", "client");
-    $scope.canEditView = true;
-    $scope.isEditMode = false;
-    $scope.clienttypes = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    $scope.clienttypelabels = {
-        1: "Dental",
-        2: "Tattoo",
-        3: "Health Dept",
-        4: "Corrections",
-        5: "Podiatrist",
-        6: "Dermatologist",
-        7: "Educational",
-        8: "In-House",
-        9: "Medical",
-    };
+    DetailCtrl($scope, $stateParams, $location, Client, "clientId", "client");
+    if ($scope.userRole == 2) {
+        $scope.canEditView = true;
+        $scope.isEditMode = false;
+    }
+    $scope.clienttypes = [
+        {value:1,label: "Dental"},
+        {value:2,label: "Tattoo"},
+        {value:3,label: "Health Dept"},
+        {value:4,label: "Corrections"},
+        {value:5,label: "Podiatrist"},
+        {value:6,label: "Dermatologist"},
+        {value:7,label: "Educational"},
+        {value:8,label: "In-House"},
+        { value: 9, label: "Medical" }
+    ];
 }
 
 
 function EquipListCtrl($scope, Equipment) {
     $scope.PagingGrid.Service = Equipment;
     $scope.PagingGrid.gridOptions.columnDefs = [{ field: 'Id', displayName: 'Equip ID' },
-            { field: 'Type', displayName: 'Equipment Type' },
+            { field: 'Type', displayName: 'Equipment Type', cellFilter: 'equipmentType' },
             { field: 'IsActive', displayName: 'Is Active', cellFilter: 'checkmark' },
     ];
 }
-function ClientEquipListCtrl($scope, $routeParams, ClientEquipment, Equipment) {
-    var clientId = $routeParams.clientId;
+function ClientEquipListCtrl($scope, $stateParams, ClientEquipment, Equipment) {
+    var clientId = $stateParams.clientId;
     if (!clientId) {
         $scope.PagingGrid.Service = Equipment;
     } else {
         $scope.PagingGrid.Service = ClientEquipment;
         $scope.PagingGrid.filterOptions = {
             filters: ['clientId'],
-            clientId: $routeParams.clientId,
+            clientId: $stateParams.clientId,
         };
     }
     $scope.PagingGrid.gridOptions.columnDefs = [{ field: 'Id', displayName: 'Equip ID' },
-            { field: 'Type', displayName: 'Equipment Type' },
+            { field: 'Type', displayName: 'Equipment Type', cellFilter: 'equipmentType' },
             { field: 'IsActive', displayName: 'Is Active', cellFilter: 'checkmark' },
     ];
 }
 
-function EquipDetailCtrl($scope, $routeParams, $location, Equipment) {
-    DetailCtrl($scope, $routeParams, $location, Equipment, "equipmentId", "equipment");
+function EquipDetailCtrl($scope, $stateParams, $location, Equipment) {
+    DetailCtrl($scope, $stateParams, $location, Equipment, "equipmentId", "equipment");
+    $scope.equipmenttypes = [
+        { value: 1, label: "Autoclave" },
+        { value: 2, label: "Chemiclave" },
+        { value: 3, label: "Other" },
+    ];
 }
 
 function OrderListCtrl($rootScope, $scope, Order) {
@@ -339,15 +374,15 @@ function OrderListCtrl($rootScope, $scope, Order) {
         ];
     }
 }
-function ClientOrderListCtrl($scope, $routeParams, ClientOrder, Order) {
-    var clientId = $routeParams.clientId;
+function ClientOrderListCtrl($scope, $stateParams, ClientOrder, Order) {
+    var clientId = $stateParams.clientId;
     if (!clientId) {
         $scope.PagingGrid.Service = Order;
     } else {
         $scope.PagingGrid.Service = ClientOrder;
         $scope.PagingGrid.filterOptions = {
             filters: ['clientId'],
-            clientId: $routeParams.clientId,
+            clientId: $stateParams.clientId,
         };
     }
     $scope.PagingGrid.sortInfo.fields = ['DateReceived'];
@@ -366,7 +401,7 @@ function ClientOrderListCtrl($scope, $routeParams, ClientOrder, Order) {
     ];
 }
 
-function OrderDetailCtrl($scope, $routeParams, $location, Order) {
-    DetailCtrl($scope, $routeParams, $location, Order, "orderId", "order");
+function OrderDetailCtrl($scope, $stateParams, $location, Order) {
+    DetailCtrl($scope, $stateParams, $location, Order, "orderId", "order");
 }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -20,7 +21,8 @@ namespace OSUDental
             da.Fill(users);
             foreach (DataRow r in users.Tables[0].Rows)
             {
-                String login = r["NAME"].ToString().ToLower().Replace(" ", "").Replace(",","");
+                String login = r["NAME"].ToString().ToLower();
+                login = Regex.Replace(login,@"[^\w]","") + r["SMS_NUM"];
                 if (login.Length > 10)
                 {
                     login = login.Substring(0, 10);

@@ -1,23 +1,6 @@
-﻿<div class="container-fluid" ng-controller="OrderListCtrl">
-    <div ng-include src="'tpl/navbar.html'" ng-controller="NavBarCtrl"></div>
-<!--    <div class="navbar">
-        <div class="navbar-inner">
-            <a href="SMS" class="brand">SMS</a>
-            <div class="nav pull-right">
-                <a href="#/orders/0" class="btn btn-info">Place an Order</a>
-                <span><a href="Logout.aspx" class="btn">Log out</a></span>
-            </div>
-            <ul class="nav">
-                <li><a href="#/">Dashboard</a></li>
-                <li><a href="#/results">Results</a></li>
-                <li class="active"><a href="#/orders">Order History</a></li>
-            </ul>
-        </div>
-    </div>-->
-  <div class="row-fluid">
+﻿  <div class="row-fluid" ng-controller="OrderListCtrl">
     <div class="span12">
       <!--Body content-->
          <div class="gridStyle" ng-grid="PagingGrid.gridOptions"></div> 
     </div>
   </div>
-</div>

@@ -238,6 +238,7 @@
     <Content Include="js\angular-cookies.min.js" />
     <Content Include="js\angular-resource.min.js" />
     <Content Include="js\angular-ui-ieshiv.min.js" />
+    <Content Include="js\angular-ui-router.min.js" />
     <Content Include="js\angular-ui.min.js" />
     <Content Include="js\angular.min.js" />
     <Content Include="js\app.js" />
@@ -460,13 +461,16 @@
     <Content Include="test\unit\controller\orderSpec.js" />
     <Content Include="test\unit\controller\resultSpec.js" />
     <Content Include="test\unit\controller\equipmentSpec.js" />
+    <Content Include="tpl\actions-edit-delete.html" />
     <Content Include="tpl\client-detail.html" />
     <Content Include="tpl\client-list.html" />
+    <Content Include="tpl\client-navbar.html" />
     <Content Include="tpl\client-view.html" />
     <Content Include="tpl\client-equipment-list.html" />
     <Content Include="tpl\client-result-list.html" />
     <Content Include="tpl\client-order-list.html" />
     <Content Include="tpl\equipment-detail.html" />
+    <Content Include="tpl\navbar-edit-buttons.html" />
     <Content Include="tpl\navbar.html" />
     <Content Include="tpl\order-list.html" />
     <Content Include="tpl\equipment-list.html" />
