@@ -1,4 +1,5 @@
 ﻿<div ng-include src="'tpl/actions-edit-delete.html'"></div>
+<div ng-show="isAdmin()">
 <div class="row-fluid">
     <div class="span6">
         <label>Id:</label>
@@ -49,6 +50,41 @@
     <div class="span6">
         <label>Lot:</label>
         <input class="input-block-level" type="text" name="order.Lot" ng-model="order.Lot" required/>
+    </div>
+</div>
+</div>
+<div ng-show="isUser()">
+    <div class="row-fluid">
+        <div class="span6">
+            <label>Order Type:</label>
+            <input class="input-block-level" type="text" name="order.OrderType" ng-model="order.OrderType" required/>
+        </div>
+        <div class="span3">
+            <label>Units:</label>
+            <input class="input-block-level" type="text" name="order.Units" ng-model="order.Units" required/>
+        </div>
+        <div class="span3">
+            <label>Amount Due:</label>
+            {{order.AmountDue}}
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span3">
+            <label>Placed By:</label>
+            <input class="input-block-level" type="text" name="order.PlacedBy" ng-model="order.PlacedBy" required/>
+        </div>
+        <div class="span3">
+            <label>Date Received:</label>
+            <input class="input-block-level" type="text" name="order.DateReceived" ng-model="order.DateReceived" ui-date ui-date-format ng-required/>
+        </div>
+        <div class="span3">
+            <label>Payment Type:</label>
+            <input class="input-block-level" type="text" name="order.PaymentType" ng-model="order.PaymentType" required/>
+        </div>
+        <div class="span3">
+            <label>Check Number:</label>
+            <input class="input-block-level" type="text" name="order.CheckNumber" ng-model="order.CheckNumber" required/>
+        </div>
     </div>
 </div>
 <div ng-include src="'tpl/actions-edit-delete.html'"></div>

@@ -282,7 +282,7 @@ angular.module('osudental', ['osudentalFilters', 'osudentalServices', 'ngGrid', 
                     }
                 },
                 data: {
-                    access: access.admin,
+                    access: access.user,
                     isEditable: true
                 }
             });
@@ -338,5 +338,11 @@ angular.module('osudental', ['osudentalFilters', 'osudentalServices', 'ngGrid', 
                 }
             }
         });
+        $rootScope.isUser = function () {
+            return $rootScope.userRole == 2;
+        }
+        $rootScope.isAdmin = function () {
+            return $rootScope.userRole == 4;
+        }
     });
 

@@ -59,7 +59,7 @@
     $scope.$watch('PagingGrid.filterOptions', function () {
         $scope.PagingGrid.resetPaging();
     }, true);
-    if ($scope.userRole == 4) {
+    if ($scope.isAdmin()) {
         $scope.$watch('PagingGrid.selectedItems', function () {
             if ($scope.PagingGrid.selectedItems.length > 0) {
                 $location.path($location.path() + "/" + $scope.PagingGrid.selectedItems[0].Id);
@@ -146,7 +146,7 @@ function DetailCtrl($scope, $stateParams, $location, Service, paramName, itemNam
 function NavBarCtrl($scope, $state, $route, $location) {
     $scope.path = $location.path();
     $scope.$route = $route;
-    if ($scope.userRole == 2) {
+    if ($scope.isUser()) {
         $scope.links = [{
             uri: '#/',
             name: 'Contact Info',
@@ -160,7 +160,7 @@ function NavBarCtrl($scope, $state, $route, $location) {
             name: 'Order History',
             type: 'orders'
         }];
-    } else if ($scope.userRole == 4) {
+    } else if ($scope.isAdmin()) {
         $scope.links = [{
             uri: '#/clients',
             name: 'Clients',
@@ -289,12 +289,12 @@ function ClientListCtrl($scope, $location, Client) {
 }
 
 function ClientDetailCtrl($scope, $stateParams, $location, Client) {
-    if ($location.path()=="/" && $scope.userRole == 4) {
+    if ($location.path()=="/" && $scope.isAdmin()) {
         $location.path("/clients");
     }
 
     DetailCtrl($scope, $stateParams, $location, Client, "clientId", "client");
-    if ($scope.userRole == 2) {
+    if ($scope.isUser()) {
         $scope.canEditView = true;
         $scope.isEditMode = false;
     }
@@ -345,11 +345,11 @@ function EquipDetailCtrl($scope, $stateParams, $location, Equipment) {
     ];
 }
 
-function OrderListCtrl($rootScope, $scope, Order) {
+function OrderListCtrl($scope, Order) {
     $scope.PagingGrid.Service = Order;
     $scope.PagingGrid.sortInfo.fields = ['DateReceived'];
     $scope.PagingGrid.sortInfo.directions = ['DESC'];
-    if ($rootScope.userRole == 4) {
+    if ($scope.isAdmin()) {
         $scope.PagingGrid.gridOptions.columnDefs = [{ field: 'Id', displayName: 'Order ID' },
             { field: 'ClientId', displayName: 'Client Id' },
             { field: 'OrderType', displayName: 'Order Type' },

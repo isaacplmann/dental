@@ -469,8 +469,9 @@
     <Content Include="tpl\client-equipment-list.html" />
     <Content Include="tpl\client-result-list.html" />
     <Content Include="tpl\client-order-list.html" />
+    <Content Include="tpl\order-detail.html" />
     <Content Include="tpl\equipment-detail.html" />
-    <Content Include="tpl\navbar-edit-buttons.html" />
+    <Content Include="tpl\actions-toggle-edit.html" />
     <Content Include="tpl\navbar.html" />
     <Content Include="tpl\order-list.html" />
     <Content Include="tpl\equipment-list.html" />
