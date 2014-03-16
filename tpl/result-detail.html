@@ -7,7 +7,11 @@
     <div class="span3">
         <label>Test Successful: <br /><input type="checkbox" name="result.TestResult" ng-model="result.TestResult" /></label>
     </div>
-    <div class="span6">
+    <div class="span3">
+        <label>Client ID:</label>
+        <input class="input-block-level" type="text" name="result.ClientId" ng-model="result.ClientId" ng-disabled="!isNewMode" required/>
+    </div>
+    <div class="span3">
         <label>Equip ID:</label>
         <input class="input-block-level" type="text" name="result.EquipId" ng-model="result.EquipId" required/>
     </div>

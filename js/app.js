@@ -95,6 +95,9 @@ angular.module('osudental', ['osudentalFilters', 'osudentalServices', 'ngGrid', 
             .state("clients", {
                 url: '/clients',
                 views: {
+                    "toolbar@": {
+                        template: '<a href="#/clients/0" class="btn btn-info">Add a Client</a>'
+                    },
                     primary: {
                         templateUrl: 'tpl/client-list.html',
                         controller: 'PagingGridCtrl',

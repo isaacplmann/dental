@@ -221,7 +221,7 @@
       <td colspan="3" valign="top"><a name="pagecontent"></a> 
 <div class="container">
     <form id="form1" runat="server" class="form-signin">
-    <asp:Login runat="server" DestinationPageUrl="/index.aspx" OnLoggedIn="OnLoggedIn" InstructionTextStyle-CssClass="form-signin-heading" TitleTextStyle-CssClass="form-signin-heading" 
+    <asp:Login runat="server" DestinationPageUrl="/index.aspx#/clients" OnLoggedIn="OnLoggedIn" InstructionTextStyle-CssClass="form-signin-heading" TitleTextStyle-CssClass="form-signin-heading" 
         LoginButtonStyle-CssClass="btn btn-large btn-primary" TextBoxStyle-CssClass="input-block-level" TitleText="Please sign in" LabelStyle-CssClass="input-label" ></asp:Login>
     </form>
     </div>

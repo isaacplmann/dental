@@ -16,7 +16,7 @@ namespace OSUDental
         protected void Page_Load(object sender, EventArgs e)
         {
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlDataAdapter da = new SqlDataAdapter("SELECT * from SMS.dbo.SMCLNT WHERE Status <> 0", cn);
+            SqlDataAdapter da = new SqlDataAdapter("SELECT * from SMCLNT WHERE Status <> 0", cn);
             DataSet users = new DataSet();
             da.Fill(users);
             foreach (DataRow r in users.Tables[0].Rows)
@@ -50,7 +50,7 @@ namespace OSUDental
                 try
                 {
                     // Associate user with account details
-                    SqlCommand cmd = new SqlCommand("UPDATE SMS.dbo.SMCLNT SET UserID = @UserID WHERE SMS_NUM=@SMS_NUM", cn);
+                    SqlCommand cmd = new SqlCommand("UPDATE SMCLNT SET UserID = @UserID WHERE SMS_NUM=@SMS_NUM", cn);
                     cmd.Parameters.Add("@UserID", SqlDbType.VarChar, 50);
                     cmd.Parameters["@UserID"].Value = login;
                     cmd.Parameters.Add("@SMS_NUM", SqlDbType.Int);
@@ -68,7 +68,7 @@ namespace OSUDental
                 }
             }
 
-            SqlDataSource ds = new SqlDataSource(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString, "SELECT * from SMS.dbo.SMCLNT WHERE Status <> 0");
+            SqlDataSource ds = new SqlDataSource(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString, "SELECT * from SMCLNT WHERE Status <> 0");
             OldUsers.DataSource = ds;
             OldUsers.DataBind();
         }

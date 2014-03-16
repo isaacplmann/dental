@@ -36,7 +36,7 @@ namespace OSUDental.Services
                 return GetUserName();
             }
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("SELECT TOP 1 UserName FROM SMS.dbo.SMCLNT WHERE SMS_NUM=@SMS_NUM", cn);
+            SqlCommand cmd = new SqlCommand("SELECT TOP 1 UserName FROM SMCLNT WHERE SMS_NUM=@SMS_NUM", cn);
             cmd.Parameters.AddWithValue("@SMS_NUM", clientId);
             cn.Open();
             return cmd.ExecuteScalar().ToString();
@@ -45,7 +45,7 @@ namespace OSUDental.Services
         public static int GetClientId()
         {
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("SELECT TOP 1 SMS_NUM FROM SMS.dbo.SMCLNT WHERE UserName=@UserName", cn);
+            SqlCommand cmd = new SqlCommand("SELECT TOP 1 SMS_NUM FROM SMCLNT WHERE UserName=@UserName", cn);
             cmd.Parameters.AddWithValue("@UserName", GetUserName());
             cn.Open();
             return (Int32)cmd.ExecuteScalar();
@@ -58,7 +58,7 @@ namespace OSUDental.Services
                 return GetClientId();
             }
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("SELECT TOP 1 SMS_NUM FROM SMS.dbo.SMCLNT WHERE UserName=@UserName", cn);
+            SqlCommand cmd = new SqlCommand("SELECT TOP 1 SMS_NUM FROM SMCLNT WHERE UserName=@UserName", cn);
             cmd.Parameters.AddWithValue("@UserName", username);
             cn.Open();
             return (Int32)cmd.ExecuteScalar();

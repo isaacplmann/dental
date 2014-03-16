@@ -56,8 +56,19 @@
     $scope.$watch('PagingGrid.sortInfo.directions', function () {
         $scope.PagingGrid.resetPaging();
     }, true);
+    var timer = null;
+    $scope.PagingGrid.isRendered = false;
     $scope.$watch('PagingGrid.filterOptions', function () {
-        $scope.PagingGrid.resetPaging();
+        if(timer){
+            $timeout.cancel(timer)
+        }
+        if ($scope.PagingGrid.isRendered) {
+            timer = $timeout(function () {
+                $scope.PagingGrid.resetPaging();
+            }, 500);
+        } else { // HACK to not send an extra server call and flash list content on load
+            $scope.PagingGrid.isRendered = true;
+        }
     }, true);
     if ($scope.isAdmin()) {
         $scope.$watch('PagingGrid.selectedItems', function () {
@@ -75,8 +86,8 @@
         pagingOptions: $scope.PagingGrid.pagingOptions,
         //filterOptions: $scope.filterOptions,
         selectedItems: $scope.PagingGrid.selectedItems,
-        sortInfo: $scope.sortInfo,
-        useExternalSorting: true,
+        sortInfo: $scope.PagingGrid.sortInfo,
+        //useExternalSorting: true,
         //        totalServerItems:  //0 //Result.count()
     }
 };
@@ -212,9 +223,10 @@ function ResultListCtrl($scope, Result) {
     $scope.PagingGrid.sortInfo.fields = ['TestDate'];
     $scope.PagingGrid.sortInfo.directions = ['DESC'];
     $scope.PagingGrid.filterOptions = {
-        filters: ['startDate', 'endDate'],
+        filters: ['startDate', 'endDate', 'search'],
         startDate: null,
-        endDate: null
+        endDate: null,
+        search: null,
     };
 
     $scope.PagingGrid.gridOptions.columnDefs = [{ field: 'TestDate', displayName: 'Test Date', cellFilter: 'date' },
@@ -240,17 +252,19 @@ function ClientResultListCtrl($scope, $stateParams, ClientResult, Result) {
     if (!clientId) {
         $scope.PagingGrid.Service = Result;
         $scope.PagingGrid.filterOptions = {
-            filters: ['startDate', 'endDate'],
+            filters: ['startDate', 'endDate', 'search'],
             startDate: null,
             endDate: null,
+            search: null,
         };
     } else {
         $scope.PagingGrid.Service = ClientResult;
         $scope.PagingGrid.filterOptions = {
-            filters: ['startDate', 'endDate', 'clientId'],
+            filters: ['startDate', 'endDate', 'clientId', 'search'],
             startDate: null,
             endDate: null,
             clientId: $stateParams.clientId,
+            search: null,
         };
     }
     $scope.PagingGrid.sortInfo.fields = ['TestDate'];
@@ -286,6 +300,10 @@ function ClientListCtrl($scope, $location, Client) {
         { field: 'Address2', displayName: 'Address' },
         { field: 'DateAdded', displayName: 'Date Added', cellFilter: 'date' }
     ];
+    $scope.PagingGrid.filterOptions = {
+        filters: ['search'],
+        search: null,
+    };
 }
 
 function ClientDetailCtrl($scope, $stateParams, $location, Client) {
@@ -318,6 +336,10 @@ function EquipListCtrl($scope, Equipment) {
             { field: 'Type', displayName: 'Equipment Type', cellFilter: 'equipmentType' },
             { field: 'IsActive', displayName: 'Is Active', cellFilter: 'checkmark' },
     ];
+    $scope.PagingGrid.filterOptions = {
+        filters: ['search'],
+        search: null,
+    };
 }
 function ClientEquipListCtrl($scope, $stateParams, ClientEquipment, Equipment) {
     var clientId = $stateParams.clientId;
@@ -347,6 +369,10 @@ function EquipDetailCtrl($scope, $stateParams, $location, Equipment) {
 
 function OrderListCtrl($scope, Order) {
     $scope.PagingGrid.Service = Order;
+    $scope.PagingGrid.filterOptions = {
+        filters: ['search'],
+        search: null,
+    };
     $scope.PagingGrid.sortInfo.fields = ['DateReceived'];
     $scope.PagingGrid.sortInfo.directions = ['DESC'];
     if ($scope.isAdmin()) {
@@ -378,11 +404,16 @@ function ClientOrderListCtrl($scope, $stateParams, ClientOrder, Order) {
     var clientId = $stateParams.clientId;
     if (!clientId) {
         $scope.PagingGrid.Service = Order;
+        $scope.PagingGrid.filterOptions = {
+            filters: ['search'],
+            search: null,
+        };
     } else {
         $scope.PagingGrid.Service = ClientOrder;
         $scope.PagingGrid.filterOptions = {
-            filters: ['clientId'],
+            filters: ['clientId','search'],
             clientId: $stateParams.clientId,
+            search: null,
         };
     }
     $scope.PagingGrid.sortInfo.fields = ['DateReceived'];

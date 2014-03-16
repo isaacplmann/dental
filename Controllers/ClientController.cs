@@ -38,7 +38,7 @@ namespace OSUDental.Controllers
         }
 
         [Authorize(Roles = "admin")]
-        public Client[] Get([FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
+        public Client[] Get([FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction, [FromUri(Name = "search")]string search)
         {
             if (!AuthenticationHelper.IsAdmin())
             {
@@ -46,7 +46,11 @@ namespace OSUDental.Controllers
                 clients.Add(rep.GetClient());
                 return clients.ToArray();
             }
-            return rep.GetAllClients(page, pageSize, sortColumn, direction).ToArray();
+            if (search != null && search.Equals("null"))
+            {
+                search = null;
+            }
+            return rep.GetAllClients(page, pageSize, sortColumn, direction, search).ToArray();
         }
 
         public Client Get()
@@ -70,16 +74,26 @@ namespace OSUDental.Controllers
 
         public HttpResponseMessage Post(Client client)
         {
+            HttpStatusCode hsc = HttpStatusCode.OK;
             if (AuthenticationHelper.IsAdmin() || AuthenticationHelper.GetClientId() == client.Id)
             {
-                this.rep.SaveClient(client);
+                if (client.Id > 0)
+                {
+                    this.rep.SaveClient(client);
+                }
+                else
+                {
+                    int newId = this.rep.CreateClient(client);
+                    client.Id = newId;
+                    hsc = HttpStatusCode.Created;
+                }
             }
             else
             {
                 throw new UnauthorizedAccessException("You do not have permission to edit this client.");
             }
 
-            var response = Request.CreateResponse<Client>(System.Net.HttpStatusCode.Created, client);
+            var response = Request.CreateResponse<Client>(hsc, client);
 
             return response;
         }
@@ -87,13 +101,9 @@ namespace OSUDental.Controllers
         [Authorize(Roles = "admin")]
         public HttpResponseMessage Delete(int Id)
         {
-            if (AuthenticationHelper.IsAdmin())
-            {
-                Client client = this.rep.DeleteClient(Id);
-                var response = Request.CreateResponse<Client>(System.Net.HttpStatusCode.OK, client);
-                return response;
-            }
-            throw new UnauthorizedAccessException("You do not have permission to delete this client.");
+            Client client = this.rep.DeleteClient(Id);
+            var response = Request.CreateResponse<Client>(System.Net.HttpStatusCode.OK, client);
+            return response;
         }
     }
 }

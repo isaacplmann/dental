@@ -53,7 +53,7 @@ namespace OSUDental.Services
             }
 
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM SMS.dbo.SMRESLT AS r INNER JOIN SMS.dbo.SMCLNT AS c ON r.RSMS_NUM = c.SMS_NUM WHERE c.UserName = @UserName AND r.TEST_DATE BETWEEN @StartDate AND @EndDate", cn);
+            SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM SMRESLT AS r INNER JOIN SMCLNT AS c ON r.RSMS_NUM = c.SMS_NUM WHERE c.UserName = @UserName AND r.TEST_DATE BETWEEN @StartDate AND @EndDate", cn);
             cmd.Parameters.AddWithValue("@UserName", username);
             cmd.Parameters.AddWithValue("@StartDate", start);
             cmd.Parameters.AddWithValue("@EndDate", end);
@@ -65,22 +65,22 @@ namespace OSUDental.Services
 
         public List<Result> GetAllResults()
         {
-            return GetAllResults(null, null, new PageDetails());
+            return GetAllResults(null, null, new PageDetails(), null);
         }
-        public List<Result> GetAllResults(DateTime? startDate, DateTime? endDate, PageDetails pageDetails)
+        public List<Result> GetAllResults(DateTime? startDate, DateTime? endDate, PageDetails pageDetails, String search)
         {
-            return GetAllResults(0, startDate, endDate, pageDetails);
+            return GetAllResults(0, startDate, endDate, pageDetails, search);
         }
         public List<Result> GetAllResults(int clientId)
         {
-            return GetAllResults(clientId, null, null, new PageDetails());
+            return GetAllResults(clientId, null, null, new PageDetails(), null);
         }
         public List<Result> GetAllResults(String username, DateTime? startDate, DateTime? endDate, PageDetails pageDetails)
         {
             int clientId = AuthenticationHelper.GetClientId(username);
-            return GetAllResults(clientId, startDate, endDate, pageDetails);
+            return GetAllResults(clientId, startDate, endDate, pageDetails, null);
         }
-        public List<Result> GetAllResults(int clientId, DateTime? startDate, DateTime? endDate, PageDetails pageDetails)
+        public List<Result> GetAllResults(int clientId, DateTime? startDate, DateTime? endDate, PageDetails pageDetails, String search)
         {
             String orderBy = "RESULT_ID";
             if (pageDetails.sortColumn.Equals("EnterDate"))
@@ -140,8 +140,10 @@ namespace OSUDental.Services
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
             SqlCommand cmd;
             if (!AuthenticationHelper.IsAdmin())
-            {
-                cmd = new SqlCommand("SELECT TOP "+pageDetails.GetPageSize()+" * FROM (SELECT r.RSMS_NUM,RESULT_ID,TEST_DATE,REC_DATE,RESULT,REQUIPT,HINT,ROW_NUMBER() OVER (ORDER BY " + orderBy + " " + dir + ") AS RowNum FROM SMS.dbo.SMRESLT AS r WHERE r.RSMS_NUM = @RSMSNUM AND r.TEST_DATE BETWEEN @StartDate AND @EndDate) AS T WHERE T.RowNum BETWEEN @Start AND @End", cn);
+            { // User viewing their results
+                cmd = new SqlCommand("SELECT TOP " + pageDetails.GetPageSize() + " * FROM (SELECT r.RSMS_NUM,RESULT_ID,TEST_DATE,REC_DATE,RESULT,REQUIPT,HINT,ROW_NUMBER() OVER (ORDER BY " + orderBy + " " + dir + ") AS RowNum FROM SMRESLT AS r WHERE r.RSMS_NUM = @RSMSNUM AND r.TEST_DATE BETWEEN @StartDate AND @EndDate" + (search == null ? "" : " AND (RESULT_ID LIKE @Search OR REQUIPT LIKE @Search OR Hint LIKE @Search)") + ") AS T WHERE T.RowNum BETWEEN @Start AND @End", cn);
+                if (search != null)
+                    cmd.Parameters.AddWithValue("@Search", '%' + search + '%');
                 cmd.Parameters.AddWithValue("@RSMSNUM", AuthenticationHelper.GetClientId());
                 cmd.Parameters.AddWithValue("@StartDate", start);
                 cmd.Parameters.AddWithValue("@EndDate", end);
@@ -149,18 +151,22 @@ namespace OSUDental.Services
                 cmd.Parameters.AddWithValue("@End", pageDetails.GetEndingRow());
             }
             else
-            {
+            { // Admin viewing...
                 if (clientId==0)
-                {
-                    cmd = new SqlCommand("SELECT TOP " + pageDetails.GetPageSize() + " * FROM (SELECT r.RSMS_NUM,RESULT_ID,TEST_DATE,REC_DATE,RESULT,REQUIPT,HINT,ROW_NUMBER() OVER (ORDER BY " + orderBy + " " + dir + ") AS RowNum FROM SMS.dbo.SMRESLT AS r WHERE r.TEST_DATE BETWEEN @StartDate AND @EndDate) AS T WHERE T.RowNum BETWEEN @Start AND @End", cn);
+                { // ...all results.
+                    cmd = new SqlCommand("SELECT TOP " + pageDetails.GetPageSize() + " * FROM (SELECT r.RSMS_NUM,RESULT_ID,TEST_DATE,REC_DATE,RESULT,REQUIPT,HINT,ROW_NUMBER() OVER (ORDER BY " + orderBy + " " + dir + ") AS RowNum FROM SMRESLT AS r WHERE r.TEST_DATE BETWEEN @StartDate AND @EndDate" + (search == null ? "" : " AND (RESULT_ID LIKE @Search OR REQUIPT LIKE @Search OR Hint LIKE @Search)") + ") AS T WHERE T.RowNum BETWEEN @Start AND @End", cn);
+                    if (search != null)
+                        cmd.Parameters.AddWithValue("@Search", '%' + search + '%');
                     cmd.Parameters.AddWithValue("@StartDate", start);
                     cmd.Parameters.AddWithValue("@EndDate", end);
                     cmd.Parameters.AddWithValue("@Start", pageDetails.GetStartingRow());
                     cmd.Parameters.AddWithValue("@End", pageDetails.GetEndingRow());
                 }
                 else
-                {
-                    cmd = new SqlCommand("SELECT TOP " + pageDetails.GetPageSize() + " * FROM (SELECT r.RSMS_NUM,RESULT_ID,TEST_DATE,REC_DATE,RESULT,REQUIPT,HINT,ROW_NUMBER() OVER (ORDER BY " + orderBy + " " + dir + ") AS RowNum FROM SMS.dbo.SMRESLT AS r WHERE r.RSMS_NUM = @RSMSNUM AND r.TEST_DATE BETWEEN @StartDate AND @EndDate) AS T WHERE T.RowNum BETWEEN @Start AND @End", cn);
+                { // ...one client's results.
+                    cmd = new SqlCommand("SELECT TOP " + pageDetails.GetPageSize() + " * FROM (SELECT r.RSMS_NUM,RESULT_ID,TEST_DATE,REC_DATE,RESULT,REQUIPT,HINT,ROW_NUMBER() OVER (ORDER BY " + orderBy + " " + dir + ") AS RowNum FROM SMRESLT AS r WHERE r.RSMS_NUM = @RSMSNUM AND r.TEST_DATE BETWEEN @StartDate AND @EndDate" + (search == null ? "" : " AND (RESULT_ID LIKE @Search OR REQUIPT LIKE @Search OR Hint LIKE @Search)") + ") AS T WHERE T.RowNum BETWEEN @Start AND @End", cn);
+                    if (search != null)
+                        cmd.Parameters.AddWithValue("@Search", '%' + search + '%');
                     cmd.Parameters.AddWithValue("@RSMSNUM", clientId);
                     cmd.Parameters.AddWithValue("@StartDate", start);
                     cmd.Parameters.AddWithValue("@EndDate", end);
@@ -201,7 +207,7 @@ namespace OSUDental.Services
 
         public Result GetResult(int Id) {
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("SELECT TOP 1 * FROM SMS.dbo.SMRESLT WHERE RESULT_ID=@ResultID", cn);
+            SqlCommand cmd = new SqlCommand("SELECT TOP 1 * FROM SMRESLT WHERE RESULT_ID=@ResultID", cn);
             cmd.Parameters.AddWithValue("@ResultID", Id);
             cn.Open();
             SqlDataReader dr = cmd.ExecuteReader();
@@ -231,7 +237,8 @@ namespace OSUDental.Services
         public int CreateResult(Result result)
         {
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("INSERT INTO SMS.dbo.SMRESLT (TEST_DATE,REC_DATE,RESULT,REQUIPT,HINT) OUTPUT Inserted.RESULT_ID VALUES(@TestDate,@RecDate,@Result,@Requipt,@Hint)", cn);
+            SqlCommand cmd = new SqlCommand("INSERT INTO SMRESLT (RSMS_NUM,TEST_DATE,REC_DATE,RESULT,REQUIPT,HINT) OUTPUT Inserted.RESULT_ID VALUES(@ClientId,@TestDate,@RecDate,@Result,@Requipt,@Hint)", cn);
+            cmd.Parameters.AddWithValue("@ClientId", result.ClientId);
             cmd.Parameters.AddWithValue("@TestDate", result.TestDate);
             cmd.Parameters.AddWithValue("@RecDate", result.EnterDate);
             cmd.Parameters.AddWithValue("@Result", result.TestResult?"+":"-");
@@ -248,7 +255,7 @@ namespace OSUDental.Services
         public bool SaveResult(Result result)
         {
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("UPDATE SMS.dbo.SMRESLT SET TEST_DATE=@TestDate,REC_DATE=@RecDate,RESULT=@Result,REQUIPT=@Requipt,HINT=@Hint WHERE RESULT_ID=@ResultID", cn);
+            SqlCommand cmd = new SqlCommand("UPDATE SMRESLT SET TEST_DATE=@TestDate,REC_DATE=@RecDate,RESULT=@Result,REQUIPT=@Requipt,HINT=@Hint WHERE RESULT_ID=@ResultID", cn);
             cmd.Parameters.AddWithValue("@TestDate", result.TestDate);
             cmd.Parameters.AddWithValue("@RecDate", result.EnterDate);
             cmd.Parameters.AddWithValue("@Result", result.TestResult ? "+" : "-");
@@ -266,7 +273,7 @@ namespace OSUDental.Services
         public Result DeleteResult(int resultId)
         {
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("DELETE TOP 1 SMS.dbo.SMRESLT OUTPUT DELETED.* WHERE RESULT_ID=@ResultID", cn);
+            SqlCommand cmd = new SqlCommand("DELETE SMRESLT OUTPUT Deleted.* FROM SMRESLT WHERE RESULT_ID=@ResultID", cn);
             cmd.Parameters.AddWithValue("@ResultID", resultId);
 
             cn.Open();

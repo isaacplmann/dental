@@ -36,16 +36,23 @@ namespace OSUDental.Controllers
             return new Equipment[0];
         }
 
-        public Equipment[] Get([FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
+        public Equipment[] Get([FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction, [FromUri(Name = "search")]string search)
         {
-            
-            return rep.GetAllEquipment(new PageDetails(page, pageSize, sortColumn, direction)).ToArray();
+            if (search != null && search.Equals("null"))
+            {
+                search = null;
+            }
+            return rep.GetAllEquipment(new PageDetails(page, pageSize, sortColumn, direction), search).ToArray();
         }
 
         [Authorize(Roles = "admin")]
-        public Equipment[] Get([FromUri(Name = "clientId")]int clientId, [FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
+        public Equipment[] Get([FromUri(Name = "clientId")]int clientId, [FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction, [FromUri(Name = "search")]string search)
         {
-            return rep.GetAllEquipment(clientId, new PageDetails(page, pageSize, sortColumn, direction)).ToArray();
+            if (search != null && search.Equals("null"))
+            {
+                search = null;
+            }
+            return rep.GetAllEquipment(clientId, new PageDetails(page, pageSize, sortColumn, direction), search).ToArray();
         }
 
         public Equipment Get(int id)
@@ -56,9 +63,19 @@ namespace OSUDental.Controllers
         [Authorize(Roles = "admin")]
         public HttpResponseMessage Post(Equipment equipment)
         {
-            this.rep.SaveEquipment(equipment);
+            HttpStatusCode hsc = HttpStatusCode.OK;
+            if (equipment.Id > 0)
+            {
+                this.rep.SaveEquipment(equipment);
+            }
+            else
+            {
+                int newId = this.rep.CreateEquipment(equipment);
+                equipment.Id = newId;
+                hsc = HttpStatusCode.Created;
+            }
 
-            var response = Request.CreateResponse<Equipment>(System.Net.HttpStatusCode.Created, equipment);
+            var response = Request.CreateResponse<Equipment>(hsc, equipment);
 
             return response;
         }

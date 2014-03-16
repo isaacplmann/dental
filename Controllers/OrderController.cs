@@ -7,7 +7,6 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
 
 namespace OSUDental.Controllers
 {
@@ -36,15 +35,23 @@ namespace OSUDental.Controllers
             return new Order[0];
         }
 
-        public Order[] Get([FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
+        public Order[] Get([FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction, [FromUri(Name = "search")]string search)
         {
-            
-            return rep.GetAllOrders(new PageDetails(page, pageSize, sortColumn, direction)).ToArray();
+            if (search != null && search.Equals("null"))
+            {
+                search = null;
+            }
+            return rep.GetAllOrders(new PageDetails(page, pageSize, sortColumn, direction), search).ToArray();
         }
 
-        public Order[] Get([FromUri(Name="clientId")]int clientId,[FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction)
+        [Authorize(Roles = "admin")]
+        public Order[] Get([FromUri(Name = "clientId")]int clientId, [FromUri(Name = "page")]int page, [FromUri(Name = "pageSize")]int pageSize, [FromUri(Name = "sortColumn")]string sortColumn, [FromUri(Name = "direction")]string direction, [FromUri(Name = "search")]string search)
         {
-            return rep.GetAllOrders(clientId, new PageDetails(page, pageSize, sortColumn, direction)).ToArray();
+            if (search != null && search.Equals("null"))
+            {
+                search = null;
+            }
+            return rep.GetAllOrders(clientId, new PageDetails(page, pageSize, sortColumn, direction), search).ToArray();
         }
 
         public Order Get(int id)
@@ -54,9 +61,19 @@ namespace OSUDental.Controllers
 
         public HttpResponseMessage Post(Order order)
         {
-            this.rep.SaveOrder(order);
+            HttpStatusCode hsc = HttpStatusCode.OK;
+            if (order.Id > 0)
+            {
+                this.rep.SaveOrder(order);
+            }
+            else
+            {
+                int newId = this.rep.CreateOrder(order);
+                order.Id = newId;
+                hsc = HttpStatusCode.Created;
+            }
 
-            var response = Request.CreateResponse<Order>(System.Net.HttpStatusCode.Created, order);
+            var response = Request.CreateResponse<Order>(hsc, order);
 
             return response;
         }

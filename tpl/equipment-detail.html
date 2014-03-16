@@ -5,7 +5,7 @@
     </div>
     <div class="span3">
         <label>Client Id:</label>
-        <input class="input-block-level" type="text" name="equipment.ClientId" ng-model="equipment.ClientId" required/>
+        <input class="input-block-level" type="text" name="equipment.ClientId" ng-model="equipment.ClientId" ng-disabled='!isNewMode' required/>
     </div>
     <div class="span3">
         <label>Is Active: <br /><input type="checkbox" name="equipment.IsActive" ng-model="equipment.IsActive" /></label>

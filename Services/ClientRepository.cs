@@ -23,10 +23,10 @@ namespace OSUDental.Services
         }
 
         public List<Client> GetAllClients() {
-            return GetAllClients(1, 50,"NAME","ASC");
+            return GetAllClients(1, 50,"NAME","ASC",null);
         }
 
-        public List<Client> GetAllClients(int Page,int PageSize,String SortColumn,String direction) {
+        public List<Client> GetAllClients(int Page,int PageSize,String SortColumn,String direction, String search) {
             if (!HttpContext.Current.User.IsInRole("admin"))
             {
                 throw new UnauthorizedAccessException("You do not have permission to view all clients' information.");
@@ -57,9 +57,11 @@ namespace OSUDental.Services
             }
 
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("SELECT TOP 200 * FROM (SELECT *,ROW_NUMBER() OVER (ORDER BY "+orderBy+" "+dir+") AS RowNum FROM [SMS].[dbo].[SMCLNT] WHERE STATUS <> 0) AS C WHERE STATUS <> 0 AND C.RowNum BETWEEN @Start AND @End", cn);
-            cmd.Parameters.AddWithValue("@Start",(Page-1)*PageSize+1);
-            cmd.Parameters.AddWithValue("@End",(Page)*PageSize);
+            SqlCommand cmd = new SqlCommand("SELECT TOP 200 * FROM (SELECT *,ROW_NUMBER() OVER (ORDER BY "+orderBy+" "+dir+") AS RowNum FROM [SMCLNT] WHERE STATUS <> 0"+(search==null?"":" AND (Name LIKE @Search OR SMS_NUM LIKE @Search)")+") AS C WHERE STATUS <> 0 AND C.RowNum BETWEEN @Start AND @End", cn);
+            if(search != null)
+                cmd.Parameters.AddWithValue("@Search", '%'+search+'%');
+            cmd.Parameters.AddWithValue("@Start", (Page - 1) * PageSize + 1);
+            cmd.Parameters.AddWithValue("@End", (Page) * PageSize);
             cn.Open();
             SqlDataReader dr = cmd.ExecuteReader();
 
@@ -105,7 +107,7 @@ namespace OSUDental.Services
         private Client GetClient(String username)
         {
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("SELECT TOP 1 * FROM SMS.dbo.SMCLNT WHERE username=@username", cn);
+            SqlCommand cmd = new SqlCommand("SELECT TOP 1 * FROM SMCLNT WHERE username=@username", cn);
             cmd.Parameters.AddWithValue("@username", username);
             cn.Open();
             SqlDataReader dr = cmd.ExecuteReader();
@@ -117,7 +119,7 @@ namespace OSUDental.Services
         public Client GetClient(int Id)
         {
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("SELECT TOP 1 * FROM SMS.dbo.SMCLNT WHERE SMS_NUM=@SMS_NUM", cn);
+            SqlCommand cmd = new SqlCommand("SELECT TOP 1 * FROM SMCLNT WHERE SMS_NUM=@SMS_NUM", cn);
             cmd.Parameters.AddWithValue("@SMS_NUM", Id);
             cn.Open();
             SqlDataReader dr = cmd.ExecuteReader();
@@ -170,9 +172,59 @@ namespace OSUDental.Services
             return null;
         }
 
-        public bool SaveClient(Client client) {
+        public int CreateClient(Client client)
+        {
             SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            SqlCommand cmd = new SqlCommand("UPDATE SMS.dbo.SMCLNT SET [STATUS] = @STATUS,[TYPE] = @TYPE,[NAME] = @NAME,[Address] = @Address,[ADDRESS2] = @ADDRESS2,[CITY] = @CITY,[STATE] = @STATE,[ZIP] = @ZIP,[TELE] = @TELE,[Telephone_Ext] = @Telephone_Ext,[DTADDED] = @DTADDED,[DTDROPPED] = @DTDROPPED,[FAX] = @FAX,[REFER_BY] = @REFER_BY,[certificate] = @certificate,[Life_Member] = @Life_Member,[Email] = @Email,[Graduate] = @Graduate,[Alumni_Annual] = @Alumni_Annual,[Alumni_ID] = @Alumni_ID,[DDS_LastName] = @DDS_LastName,[DDS_FirstName] = @DDS_FirstName WHERE [SMS_NUM] = @SMS_NUM", cn);
+            SqlCommand cmd = new SqlCommand("INSERT INTO SMCLNT ([STATUS],[TYPE],[NAME],[Address],[ADDRESS2],[CITY],[STATE],[ZIP],[TELE],[Telephone_Ext],[DTADDED],[DTDROPPED],[FAX],[REFER_BY],[certificate],[Life_Member],[Email],[Graduate],[Alumni_Annual],[Alumni_ID],[DDS_LastName],[DDS_FirstName]) OUTPUT Inserted.[SMS_NUM] VALUES(@STATUS,@TYPE,@NAME,@Address,@ADDRESS2,@CITY,@STATE,@ZIP,@TELE,@Telephone_Ext,@DTADDED,@DTDROPPED,@FAX,@REFER_BY,@certificate,@Life_Member,@Email,@Graduate,@Alumni_Annual,@Alumni_ID,@DDS_LastName,@DDS_FirstName)", cn);
+            //cmd.Parameters.AddWithValue("@SMS_NUM", client.Id);
+            cmd.Parameters.AddWithValue("@STATUS", client.IsActive);
+            cmd.Parameters.AddWithValue("@TYPE", client.TypeId);
+            cmd.Parameters.AddWithValue("@NAME", client.Name);
+            cmd.Parameters.AddWithValue("@Address", client.Address);
+            cmd.Parameters.AddWithValue("@ADDRESS2", client.Address2);
+            cmd.Parameters.AddWithValue("@CITY", client.City);
+            cmd.Parameters.AddWithValue("@STATE", client.State);
+            cmd.Parameters.AddWithValue("@ZIP", client.Zip);
+            cmd.Parameters.AddWithValue("@TELE", client.Phone);
+            cmd.Parameters.AddWithValue("@Telephone_Ext", client.Extension);
+            if (client.DateAdded == null)
+            {
+                cmd.Parameters.Add("@DTADDED", SqlDbType.DateTime).Value = DateTime.Now;
+            }
+            else
+            {
+                cmd.Parameters.Add("@DTADDED", SqlDbType.DateTime).Value = client.DateAdded;
+            }
+            if (client.DateDropped == null)
+            {
+                cmd.Parameters.Add("@DTDROPPED", SqlDbType.DateTime).Value = DBNull.Value;
+            }
+            else
+            {
+                cmd.Parameters.Add("@DTDROPPED", SqlDbType.DateTime).Value = client.DateDropped;
+            }
+            cmd.Parameters.AddWithValue("@FAX", client.Fax);
+            cmd.Parameters.AddWithValue("@REFER_BY", client.ReferBy==null?"":client.ReferBy);
+            cmd.Parameters.AddWithValue("@certificate", client.Certificate);
+            cmd.Parameters.AddWithValue("@Life_Member", client.LifeMember);
+            cmd.Parameters.AddWithValue("@Email", client.Email);
+            cmd.Parameters.AddWithValue("@Graduate", client.Graduate);
+            cmd.Parameters.AddWithValue("@Alumni_Annual", client.AlumniAnnual == null ? "" : client.AlumniAnnual);
+            cmd.Parameters.AddWithValue("@Alumni_ID", client.AlumniID == null ? "" : client.AlumniID);
+            cmd.Parameters.AddWithValue("@DDS_FirstName", client.DDSFirstName);
+            cmd.Parameters.AddWithValue("@DDS_LastName", client.DDSLastName);
+
+            cn.Open();
+            int newId = Convert.ToInt32(cmd.ExecuteScalar());
+            cn.Close();
+
+            return newId;
+        }
+
+        public bool SaveClient(Client client)
+        {
+            SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+            SqlCommand cmd = new SqlCommand("UPDATE SMCLNT SET [STATUS] = @STATUS,[TYPE] = @TYPE,[NAME] = @NAME,[Address] = @Address,[ADDRESS2] = @ADDRESS2,[CITY] = @CITY,[STATE] = @STATE,[ZIP] = @ZIP,[TELE] = @TELE,[Telephone_Ext] = @Telephone_Ext,[DTADDED] = @DTADDED,[DTDROPPED] = @DTDROPPED,[FAX] = @FAX,[REFER_BY] = @REFER_BY,[certificate] = @certificate,[Life_Member] = @Life_Member,[Email] = @Email,[Graduate] = @Graduate,[Alumni_Annual] = @Alumni_Annual,[Alumni_ID] = @Alumni_ID,[DDS_LastName] = @DDS_LastName,[DDS_FirstName] = @DDS_FirstName WHERE [SMS_NUM] = @SMS_NUM", cn);
             cmd.Parameters.AddWithValue("@SMS_NUM", client.Id);
             cmd.Parameters.AddWithValue("@STATUS", client.IsActive);
             cmd.Parameters.AddWithValue("@TYPE", client.TypeId);
@@ -220,8 +272,15 @@ namespace OSUDental.Services
 
         public Client DeleteClient(int clientId)
         {
-            // TODO
-            return null;
+            SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+            SqlCommand cmd = new SqlCommand("DELETE SMCLNT OUTPUT DELETED.* FROM SMCLNT WHERE SMS_NUM=@SMS_NUM", cn);
+            cmd.Parameters.AddWithValue("@SMS_NUM", clientId);
+            cn.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            Client cl = GetClient(dr);
+            cn.Close();
+            return cl;
         }
     }
 }
