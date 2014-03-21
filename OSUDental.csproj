@@ -150,6 +150,9 @@
     <Compile Include="Logout.aspx.designer.cs">
       <DependentUpon>Logout.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Messaging\CacheMockService.cs" />
+    <Compile Include="Messaging\EmailAlertJob.cs" />
+    <Compile Include="Messaging\Job.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Equipment.cs" />
@@ -167,6 +170,13 @@
     </Compile>
     <Compile Include="Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="TestEmail.aspx.cs">
+      <DependentUpon>TestEmail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="TestEmail.aspx.designer.cs">
+      <DependentUpon>TestEmail.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -254,6 +264,7 @@
     <Content Include="js\es5-shim.min.js" />
     <Content Include="js\filters.js" />
     <Content Include="js\jquery-1.9.1.min.js" />
+    <Content Include="js\jquery-ui-1.10.2.custom.min.js" />
     <Content Include="js\ng-grid-2.0.4.debug.js" />
     <Content Include="js\ng-grid-2.0.4.min.js" />
     <Content Include="js\routingConfig.js" />
@@ -462,6 +473,7 @@
     <Content Include="test-config\karma.shared.conf.js" />
     <Content Include="test-config\karma.unit.conf.js" />
     <Content Include="test-config\karma.midway.conf.js" />
+    <Content Include="TestEmail.aspx" />
     <Content Include="test\e2e\routesSpec.js" />
     <Content Include="test\lib\angular-mocks.js" />
     <Content Include="test\lib\ngMidwayTester.js" />
@@ -496,6 +508,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\Site.css" />
     <Content Include="Images\accent.png" />

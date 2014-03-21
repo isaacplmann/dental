@@ -21,8 +21,7 @@ namespace OSUDental
             da.Fill(users);
             foreach (DataRow r in users.Tables[0].Rows)
             {
-                String login = r["NAME"].ToString().ToLower();
-                login = Regex.Replace(login,@"[^\w]","") + r["SMS_NUM"];
+                String login = r["SMS_NUM"].ToString();
                 if (login.Length > 10)
                 {
                     login = login.Substring(0, 10);
