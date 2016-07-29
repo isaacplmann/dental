@@ -3,6 +3,18 @@
         //return input ? '\u2713' : '\u2718';
         return input ? 'icon-ok' : 'icon-remove';
     };
+}).filter('checkmarkcolor', function () {
+    return function (input) {
+        return input ? '\u2713' : '\u2718';
+    };
+}).filter('dateplus7days', function () {
+    return function (input) {
+        console.log(input);
+        var date1 = new Date(input);
+        date1.setDate(date1.getDate() + 7);
+        console.log(date1.getDate());
+        return date1;
+    };
 }).filter('equipmentType', function () {
     return function (input) {
         var equipmenttypelabels = {

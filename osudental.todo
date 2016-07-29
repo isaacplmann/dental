@@ -1,0 +1,43 @@
+Emails:
+ ✔ Email tracking database table @done (14-06-02 16:12)
+ ✔ Email template editing @done (14-06-09 09:20)
+   ✔ List replacement tokens @done (14-06-09 09:20)
+
+ ✔ Reorder reminder email @done (14-06-09 09:21)
+   ☐ View screen
+   ✔ Manually send email @done (14-06-09 10:40)
+   ✔ Mark email sent @done (14-06-09 10:40)
+ ☐ Monthly report - automated
+ ✔ Overdue sending in strip (14 days for 52 week subscription) - automated @done (14-06-09 09:20)
+ ✔ Failed test alert - automated @done (14-06-09 09:20)
+
+ ✔ List fields available for templates @done (14-06-09 09:20)
+ ✔ Check if email has already been sent - only for automated @done (14-06-09 09:20)
+ ☐ 
+
+
+Other:
+ ☐ Default username convention for the future: ‘SMS id value’-zipcode – because the main contact will change. They can add users for each individual, but this is for the default. 
+ ☐ Password recovery
+ ☐ Faint lines around forms
+ ☐ Backup
+ ☐ Monthly report for customer
+ ☐ Red x for failure
+
+
+EmailTracking:
+ ☐ ID
+ ☐ SMS_NUM
+ ☐ EmailTypeID
+ ☐ DateSent
+
+EmailType:
+ ☐ ID
+ ☐ Name
+
+EmailTemplate:
+ ☐ ID
+ ☐ EmailTypeID
+ ☐ Subject
+ ☐ BodyTemplate
+ ☐ DateCreated

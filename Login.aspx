@@ -1,6 +1,6 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="OSUDental.Login" %>
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -220,9 +220,11 @@
         </div></td>-->
       <td colspan="3" valign="top"><a name="pagecontent"></a> 
 <div class="container">
-    <form id="form1" runat="server" class="form-signin">
-    <asp:Login runat="server" DestinationPageUrl="/index.aspx#/clients" OnLoggedIn="OnLoggedIn" InstructionTextStyle-CssClass="form-signin-heading" TitleTextStyle-CssClass="form-signin-heading" 
-        LoginButtonStyle-CssClass="btn btn-large btn-primary" TextBoxStyle-CssClass="input-block-level" TitleText="Please sign in" LabelStyle-CssClass="input-label" ></asp:Login>
+    <form id="form1" runat="server" class="form-signin form-centered">
+        <asp:Login runat="server" DestinationPageUrl="/index.aspx#/clients" OnLoggedIn="OnLoggedIn" InstructionTextStyle-CssClass="form-signin-heading" 
+            TitleTextStyle-CssClass="form-signin-heading" PasswordRecoveryUrl="~/RecoverPassword.aspx" PasswordRecoveryText="Forgot your password?"
+            LoginButtonStyle-CssClass="btn btn-large btn-primary" TextBoxStyle-CssClass="input-block-level" TitleText="Please sign in"
+            LabelStyle-CssClass="input-label" ></asp:Login>
     </form>
     </div>
       </td>

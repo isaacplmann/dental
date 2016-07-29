@@ -4,6 +4,7 @@
     $scope.PagingGrid.getPagedDataAsync = function () {
         $timeout(function () {
             var queryOptions = {
+                isArray: true,
                 page: $scope.PagingGrid.pagingOptions.currentPage,
                 pageSize: $scope.PagingGrid.pagingOptions.pageSize,
                 sortColumn: $scope.PagingGrid.sortInfo.fields[0],
@@ -70,9 +71,10 @@
             $scope.PagingGrid.isRendered = true;
         }
     }, true);
+    $scope.PagingGrid.isSelectable = true;
     if ($scope.isAdmin()) {
         $scope.$watch('PagingGrid.selectedItems', function () {
-            if ($scope.PagingGrid.selectedItems.length > 0) {
+            if ($scope.PagingGrid.isSelectable && $scope.PagingGrid.selectedItems.length > 0) {
                 $location.path($location.path() + "/" + $scope.PagingGrid.selectedItems[0].Id);
             }
         }, true);
@@ -188,6 +190,14 @@ function NavBarCtrl($scope, $state, $route, $location) {
             uri: '#/orders',
             name: 'Orders',
             type: 'orders'
+        }, {
+            uri: '#/emailtemplates',
+            name: 'Email Templates',
+            type: 'emailTemplates'
+        }, {
+            uri: '#/emails',
+            name: 'Sent Emails',
+            type: 'emails'
         }];
     }
 }
@@ -230,7 +240,8 @@ function ResultListCtrl($scope, Result) {
     };
 
     $scope.PagingGrid.gridOptions.columnDefs = [{ field: 'TestDate', displayName: 'Test Date', cellFilter: 'date' },
-        { field: 'EnterDate', displayName: 'Enter Date', cellFilter: 'date' },
+        { field: 'EnterDate', displayName: 'Test Received Date', cellFilter: 'date' },
+        { field: 'EnterDate', displayName: 'Test Clearance Date', cellFilter: 'dateplus7days | date' },
         { field: 'TestResult', displayName: 'Test Result', cellFilter: 'checkmark' },
         { field: 'EquipId', displayName: 'Equip ID' },
         { field: 'Reference', displayName: 'Reference' },
@@ -270,7 +281,7 @@ function ClientResultListCtrl($scope, $stateParams, ClientResult, Result) {
     $scope.PagingGrid.sortInfo.fields = ['TestDate'];
     $scope.PagingGrid.sortInfo.directions = ['DESC'];
     $scope.PagingGrid.gridOptions.columnDefs = [{ field: 'TestDate', displayName: 'Test Date', cellFilter: 'date' },
-        { field: 'EnterDate', displayName: 'Enter Date', cellFilter: 'date' },
+        { field: 'EnterDate', displayName: 'Test Received Date', cellFilter: 'date' },
         { field: 'TestResult', displayName: 'Test Result', cellFilter: 'checkmark' },
         { field: 'EquipId', displayName: 'Equip ID' },
         { field: 'Reference', displayName: 'Reference' },
@@ -435,4 +446,68 @@ function ClientOrderListCtrl($scope, $stateParams, ClientOrder, Order) {
 function OrderDetailCtrl($scope, $stateParams, $location, Order) {
     DetailCtrl($scope, $stateParams, $location, Order, "orderId", "order");
 }
+function EmailListCtrl($scope, Email) {
+    $scope.PagingGrid.Service = Email;
+    $scope.PagingGrid.sortInfo.fields = ['DateSent'];
+    $scope.PagingGrid.sortInfo.directions = ['DESC'];
+    $scope.PagingGrid.gridOptions.columnDefs = [
+        { field: 'Id', displayName: 'Email ID' },
+        { field: 'ClientId', displayName: 'Client Id' },
+        { field: 'EmailTypeId', displayName: 'Email Type Id' },
+        { field: 'DateSent', displayName: 'Date Sent', cellFilter: 'date' }
+    ];
+    $scope.PagingGrid.isSelectable = false;
+}
+function ClientEmailListCtrl($scope, $stateParams, ClientEmail, Email) {
+    var clientId = $stateParams.clientId;
+    if (!clientId) {
+        $scope.PagingGrid.Service = Email;
+    } else {
+        $scope.PagingGrid.Service = ClientEmail;
+        $scope.PagingGrid.filterOptions = {
+            filters: ['clientId'],
+            clientId: $stateParams.clientId,
+        };
+    }
+    $scope.PagingGrid.sortInfo.fields = ['DateSent'];
+    $scope.PagingGrid.sortInfo.directions = ['DESC'];
+    $scope.PagingGrid.gridOptions.columnDefs = [{ field: 'Id', displayName: 'Email ID' },
+            { field: 'ClientId', displayName: 'Client Id' },
+            { field: 'EmailTypeId', displayName: 'Email Type Id' },
+            { field: 'DateSent', displayName: 'Date Sent', cellFilter: 'date' },
+    ];
+    $scope.PagingGrid.isSelectable = false;
+}
 
+function EmailDetailCtrl($scope, $stateParams, $location, Email) {
+    DetailCtrl($scope, $stateParams, $location, Email, "emailId", "email");
+    $scope.emailtypes = [
+        {value:1,label: "FailedTest"},
+        {value:2,label: "StripOverdue"},
+        {value:3,label: "ReorderReminder"},
+        {value:4,label: "MonthlyReport"},
+    ];
+    $scope.isEditMode = true;
+}
+
+function EmailTemplateListCtrl($scope, EmailTemplate) {
+    $scope.PagingGrid.Service = EmailTemplate;
+    $scope.PagingGrid.sortInfo.fields = ['DateCreated'];
+    $scope.PagingGrid.sortInfo.directions = ['DESC'];
+    $scope.PagingGrid.gridOptions.columnDefs = [{ field: 'Id', displayName: 'Email Template ID' },
+        { field: 'EmailTypeId', displayName: 'Email Type Id' },
+        { field: 'Subject', displayName: 'Subject' },
+        { field: 'BodyTemplate', displayName: 'Body' },
+        { field: 'DateCreated', displayName: 'Date Created', cellFilter: 'date' },
+    ];
+}
+function EmailTemplateDetailCtrl($scope, $stateParams, $location, EmailTemplate) {
+    DetailCtrl($scope, $stateParams, $location, EmailTemplate, "templateId", "template");
+    $scope.emailtypes = [
+        {value:1,label: "FailedTest"},
+        {value:2,label: "StripOverdue"},
+        {value:3,label: "ReorderReminder"},
+        {value:4,label: "MonthlyReport"},
+    ];
+    $scope.isEditMode = true;
+}

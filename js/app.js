@@ -288,6 +288,62 @@ angular.module('osudental', ['osudentalFilters', 'osudentalServices', 'ngGrid', 
                     access: access.user,
                     isEditable: true
                 }
+            })
+            .state("emails", {
+                url: '/emails',
+                views: {
+                    "toolbar@": {
+                       template: '<a href="#/emails/0" class="btn btn-info">Send an email</a>'
+                    },
+                    primary: {
+                        templateUrl: 'tpl/email-list.html',
+                        controller: 'PagingGridCtrl',
+                    }
+                },
+                data: {
+                    access: access.admin,
+                }
+            })
+            .state("emails.detail", {
+                url: '/:emailId',
+                views: {
+                    "primary@": {
+                        templateUrl: 'tpl/email-detail.html',
+                        controller: 'EmailDetailCtrl'
+                    }
+                },
+                data: {
+                    access: access.admin,
+                    isEditable: true
+                }
+            })
+            .state("emailTemplates", {
+                url: '/emailtemplates',
+                views: {
+                    //"toolbar@": {
+                    //    template: '<a href="#/orders/0" class="btn btn-info">Place an Order</a>'
+                    //},
+                    primary: {
+                        templateUrl: 'tpl/email-template-list.html',
+                        controller: 'PagingGridCtrl',
+                    }
+                },
+                data: {
+                    access: access.admin,
+                }
+            })
+            .state("emailTemplates.detail", {
+                url: '/:templateId',
+                views: {
+                    "primary@": {
+                        templateUrl: 'tpl/email-template-detail.html',
+                        controller: 'EmailTemplateDetailCtrl'
+                    }
+                },
+                data: {
+                    access: access.admin,
+                    isEditable: true
+                }
             });
 
         var interceptor = ['$location', '$q', function ($location, $q) {

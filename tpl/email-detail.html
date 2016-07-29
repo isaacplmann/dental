@@ -1,0 +1,12 @@
+﻿<div ng-include src="'tpl/actions-toggle-edit.html'"></div>
+<div class="row-fluid">
+    <div class="span6">
+        <label>Email Type ID:</label>
+        <select class="input-block-level" type="text" name="email.EmailTypeId" ng-model="email.EmailTypeId" required ng-options="obj.value as obj.label for obj in emailtypes"/>
+    </div>
+    <div class="span6">
+        <label>Client Id:</label>
+        <input class="input-block-level" type="text" name="email.ClientId" ng-model="email.ClientId" required />
+    </div>
+</div>
+<div ng-include src="'tpl/actions-toggle-edit.html'"></div>

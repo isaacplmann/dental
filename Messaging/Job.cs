@@ -6,7 +6,7 @@ using System.Web;
 
 namespace OSUDental.Messaging
 {
-    public class Job
+    public abstract class Job
     {
         public string Title;
         public DateTime ExecutionTime;
@@ -24,7 +24,7 @@ namespace OSUDental.Messaging
             this.RepeatEvery = repeatEvery;
         }
 
-        public void Execute()
+        public void PreExecute()
         {
             Debug.WriteLine("Executing job at: " + DateTime.Now);
             Debug.WriteLine(this.Title);
@@ -38,5 +38,7 @@ namespace OSUDental.Messaging
                 }
             }
         }
+
+        public abstract void Execute();
     }
 }

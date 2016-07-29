@@ -27,7 +27,7 @@ namespace OSUDental.Messaging
             if (null != HttpContext.Current.Cache[DummyCacheItemKey]) return;
 
             HttpContext.Current.Cache.Add(DummyCacheItemKey, "DummyValue", null, DateTime.MaxValue,
-                TimeSpan.FromMinutes(1), CacheItemPriority.NotRemovable,
+                TimeSpan.FromMinutes(0.1), CacheItemPriority.NotRemovable,
                 new CacheItemRemovedCallback(CacheItemRemovedCallback));
         }
 
@@ -64,7 +64,14 @@ namespace OSUDental.Messaging
         private void HitPage()
         {
             WebClient client = new WebClient();
-            client.DownloadData(DummyPageUrl);
+            try
+            {
+                client.DownloadData(DummyPageUrl);
+            }
+            catch (System.Net.WebException ex)
+            {
+                Console.Write(ex.Message);
+            }
         }
 
         /// <summary>
@@ -75,11 +82,23 @@ namespace OSUDental.Messaging
             Debug.WriteLine("Begin DoWork...");
             Debug.WriteLine("Running as: " + WindowsIdentity.GetCurrent().Name);
 
-            if(_JobQueue.Count==0)
-                EnqueueJob(new EmailAlertJob());
-            // Reorder Test Strips - 11 months from last subscribe date (harder - 3 strips left)
-            // Send in test strips after 14 days of non-activity (52 strip subscribers)
-            // Failed Test Alert
+            if (_JobQueue.Count == 0)
+            {
+                // Test email
+                //EnqueueJob(new EmailAlertJob());
+
+                // Reorder Test Strips - 11 months from last subscribe date (harder - 3 strips left)
+                EnqueueJob(new AutomatedEmailJob(EmailAlert.EmailType.ReorderReminder));
+
+                // Send in test strips reminder after 14 days of non-activity (for 52 strip subscribers)
+                EnqueueJob(new AutomatedEmailJob(EmailAlert.EmailType.StripOverdue));
+
+                // Failed test alert
+                EnqueueJob(new AutomatedEmailJob(EmailAlert.EmailType.FailedTest));
+
+                // Monthly report
+                EnqueueJob(new AutomatedEmailJob(EmailAlert.EmailType.MonthlyReport));
+            }
             ExecuteQueuedJobs();
 
             Debug.WriteLine("End DoWork...");
